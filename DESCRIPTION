@@ -1,0 +1,15 @@
+Package: ppRep
+Title: Analysis of replication studies using power priors
+Version: 0.42
+Authors@R:
+    person(given = "Samuel",
+           family = "Pawel",
+           role = c("aut", "cre"),
+           email = "samuel.pawel@uzh.ch",
+           comment = c(ORCID = "0000-0003-2779-320X"))
+Description: Provides functionality for estimation and testing of effect sizes based on original and replication study using a power prior approach.
+License: GPL-3
+Encoding: UTF-8
+Imports:
+Suggests: roxygen2, testthat
+RoxygenNote: 7.1.2
