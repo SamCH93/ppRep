@@ -11,7 +11,7 @@ Pawel, S., Aust, F., Held, L., and Wagenmakers, E.-J. (2022). Power Priors for
 ## Installation
 
 ```r
-remotes::install_github(repo = "SamCH93/ciCalibrate")
+remotes::install_github(repo = "SamCH93/ppRep")
 ```
 
 ## Usage
