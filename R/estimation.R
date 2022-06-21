@@ -3,8 +3,9 @@
 #' @description This function computes the posterior density of effect size
 #'     \eqn{\theta}{theta} and power parameter \eqn{\alpha}{alpha} assuming a
 #'     normal likelihood for original and replication effect estimate. A power
-#'     prior for \eqn{\theta}{theta} is constructed by updating an initial flat
-#'     prior with the likelihood of the original data raised to the power of
+#'     prior for \eqn{\theta}{theta} is constructed by updating an initial
+#'     normal prior \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~
+#'     N(m, v)} with the likelihood of the original data raised to the power of
 #'     \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
 #'     \mbox{Beta}(x, y)}{alpha ~ Beta(x, y)} is assumed.
 #'
@@ -20,6 +21,10 @@
 #'     Defaults to 1.
 #' @param y Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
 #'     Defaults to 1.
+#' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
+#'     Defaults to 0.
+#' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
+#'     Defaults to Inf (uniform prior).
 #' @param ... Additional arguments for integration function.
 #'
 #' @return Posterior density
@@ -40,7 +45,8 @@
 #'                ylab = bquote("Power parameter" ~ alpha), nlevels = 15,
 #'                color.palette = function(n) hcl.colors(n = n, palette = "viridis"))
 #' @export
-postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, ...) {
+postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
+                   ...) {
     ## input checks
     stopifnot(
         1 <= length(theta),
@@ -83,20 +89,32 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, ...) {
         length(y) == 1,
         is.numeric(y),
         is.finite(y),
-        0 <= y
+        0 <= y,
+
+        length(m) == 1,
+        is.numeric(m),
+        is.finite(m),
+
+        length(v) == 1,
+        is.numeric(v),
+        0 < v
     )
 
     ## compute normalizing constant just once
-    nC <- margLik(tr = tr, sr = sr, to = to, so = so, x = x, y = y,
-                       ... = ...)
+    nC <- margLik(tr = tr, sr = sr, to = to, so = so, x = x, y = y, m = m,
+                  v = v, ... = ...)
     if (is.nan(nC)) {
         out <- rep(x = NaN, times = pmax(length(alpha), length(theta)))
         return(out)
     }
 
+    ## mean and variance of normalized power prior conditional on alpha
+    pvar <- 1/(alpha/so^2 + 1/v)
+    pmean <- pvar*(to*alpha/so^2 + m/v)
+
     ## compute posterior density
     densProp <- stats::dnorm(x = tr, mean = theta, sd = sr) *
-        stats::dnorm(x = theta, mean = to, sd = so/sqrt(alpha)) *
+        stats::dnorm(x = theta, mean = pmean, sd = sqrt(pvar)) *
         stats::dbeta(x = alpha, shape1 = x, shape2 = y)
     dens <- densProp / nC
     return(dens)
@@ -107,7 +125,8 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, ...) {
 #'
 #' @description This function computes the marginal posterior density of the
 #'     power parameter \eqn{\alpha}{alpha}. A power prior for
-#'     \eqn{\theta}{theta} is constructed by updating an initial flat prior with
+#'     \eqn{\theta}{theta} is constructed by updating an initial normal prior
+#'     \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with
 #'     the likelihood of the original data raised to the power of
 #'     \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
 #'     \mbox{Beta}(x, y)}{alpha ~ Beta(x, y)} is assumed.
@@ -121,6 +140,10 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, ...) {
 #'     Defaults to 1.
 #' @param y Number of failures parameter of beta prior \eqn{\alpha}{alpha}.
 #'     Defaults to 1.
+#' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
+#'     Defaults to 0.
+#' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
+#'     Defaults to Inf (uniform prior).
 #' @param ... Additional arguments for integration function.
 #'
 #' @return Marginal posterior density of power parameter
@@ -135,7 +158,8 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, ...) {
 #' plot(alpha, margpostdens, type = "l", xlab = bquote("Power paramter" ~ alpha),
 #'      ylab = "Marginal posterior density", las = 1)
 #' @export
-postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, ...) {
+postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
+                        ...) {
     ## input checks
     stopifnot(
         1 <= length(alpha),
@@ -170,19 +194,31 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, ...) {
         length(y) == 1,
         is.numeric(y),
         is.finite(y),
-        0 <= y
+        0 <= y,
+
+        length(m) == 1,
+        is.numeric(m),
+        is.finite(m),
+
+        length(v) == 1,
+        is.numeric(v),
+        0 < v
     )
 
     ## compute normalizing constant just once
-    nC <- margLik(tr = tr, sr = sr, to = to, so = so, x = x, y = y,
-                       ... = ...)
+    nC <- margLik(tr = tr, sr = sr, to = to, so = so, x = x, y = y, m = m,
+                  v = v, ... = ...)
     if (is.nan(nC)) {
         out <- rep(x = NaN, times = length(alpha))
         return(out)
     }
 
+    ## mean and variance of normalized power prior conditional on alpha
+    pvar <- 1/(alpha/so^2 + 1/v)
+    pmean <- pvar*(to*alpha/so^2 + m/v)
+
     ## compute marginal posterior density
-    margdensProp <- stats::dnorm(x = tr, mean = to, sd = sqrt(sr^2 + so^2/alpha)) *
+    margdensProp <- stats::dnorm(x = tr, mean = pmean, sd = sqrt(sr^2 + pvar)) *
         stats::dbeta(x = alpha, shape1 = x, shape2 = y)
     margdens <- margdensProp / nC
     return(margdens)
@@ -192,10 +228,11 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, ...) {
 #'
 #' @description This function computes the marginal posterior density of the
 #'     effect size \eqn{\theta}{theta}. A power prior for \eqn{\theta}{theta} is
-#'     constructed by updating an initial flat prior with likelihood of the
+#'     constructed by updating an initial normal prior \eqn{\theta \sim
+#'     \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with likelihood of the
 #'     original data raised to the power of \eqn{\alpha}{alpha}. The power
 #'     parameter \eqn{\alpha}{alpha} can either be fixed to some value between 0
-#'     and 1, or it can have a Beta distribution \eqn{\alpha \sim
+#'     and 1, or it can have a beta prior distribution \eqn{\alpha \sim
 #'     \mbox{Beta}(\code{x}, \code{y})}{alpha ~ Beta(\code{x}, \code{y})}.
 #'
 #' @param theta Effect size. Can be a vector.
@@ -211,6 +248,10 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, ...) {
 #'     when \code{alpha = NA}.
 #' @param alpha Power parameter. Can be set to a number between 0 and 1.
 #'     Defaults to \code{NA}.
+#' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
+#'     Defaults to 0.
+#' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
+#'     Defaults to Inf (uniform prior).
 #' @param ... Additional arguments for integration function.
 #'
 #' @return Marginal posterior density of effect size
@@ -225,7 +266,8 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, ...) {
 #' plot(theta, margpostdens, type = "l", xlab = bquote("Effect size" ~ theta),
 #'      ylab = "Marginal posterior density", las = 1)
 #' @export
-postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, ...) {
+postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
+                        v = Inf, ...) {
     ## input checks
     stopifnot(
         1 <= length(theta),
@@ -265,19 +307,31 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, ...) {
          ((is.numeric(alpha)) &
           (is.finite(alpha)) &
           (0 <= alpha) &
-          (alpha <= 1)))
+          (alpha <= 1))),
+
+        length(m) == 1,
+        is.numeric(m),
+        is.finite(m),
+
+        length(v) == 1,
+        is.numeric(v),
+        0 < v
     )
 
     ## alpha fixed
     if (!is.na(alpha)) {
-        postVar <- 1/(1/sr^2 + alpha/so^2)
-        postMean <- (tr/sr^2 + to*alpha/so^2)*postVar
+        ## mean and variance of normalized power prior conditional on alpha
+        pvar <- 1/(alpha/so^2 + 1/v)
+        pmean <- pvar*(to*alpha/so^2 + m/v)
+        ## mean and variance of posterior
+        postVar <- 1/(1/sr^2 + 1/pvar)
+        postMean <- (tr/sr^2 + pmean/pvar)*postVar
         margdens <- stats::dnorm(x = theta, mean = postMean, sd = sqrt(postVar))
     } else { ## alpha random
 
         ## compute normalizing constant just once
-        nC <- margLik(tr = tr, sr = sr, to = to, so = so, x = x, y = y,
-                      ... = ...)
+        nC <- margLik(tr = tr, sr = sr, to = to, so = so, x = x, y = y, m = m,
+                      v = v, ... = ...)
         if (is.nan(nC)) {
             out <- rep(x = NaN, times = length(theta))
             return(out)
@@ -287,7 +341,10 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, ...) {
         margdens <- vapply(X = theta, FUN = function(thetai) {
             ## integrate out power parameter alpha
             intFun <- function(alpha) {
-                stats::dnorm(x = thetai, mean = to, sd = so/sqrt(alpha)) *
+                ## mean and variance of normalized power prior conditional on alpha
+                pvar <- 1/(alpha/so^2 + 1/v)
+                pmean <- pvar*(to*alpha/so^2 + m/v)
+                stats::dnorm(x = thetai, mean = pmean, sd = sqrt(pvar)) *
                     stats::dbeta(x = alpha, shape1 = x, shape2 = y)
             }
             int <- try(stats::integrate(f = intFun, lower = 0, upper = 1,
