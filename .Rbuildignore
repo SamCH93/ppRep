@@ -1,3 +1,6 @@
 LICENSE
 .github
 .gitignore
+Makefile
+out/
+posterior.png

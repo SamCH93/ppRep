@@ -73,8 +73,9 @@ margLik <- function(tr, to, sr, so, x = 1, y = 1, m = 0, v = Inf, ...) {
     ## integrate out alpha with numerical integration
     intFun <- function(alpha) {
         ## mean and variance of normalized power prior conditional on alpha
-        pvar <- 1/(alpha/so^2 + 1/v)
-        pmean <- pvar*(to*alpha/so^2 + m/v)
+        pvar <- postNormVar(vardata = so^2, priorvar = v, alpha = alpha)
+        pmean <- postNormMean(dat = to, vardata = so^2, priormean = m,
+                              priorvar = v, alpha = alpha)
 
         ## effect size theta can be integrated analytically
         stats::dnorm(x = tr, mean = pmean, sd = sqrt(sr^2 + pvar)) *
@@ -82,7 +83,7 @@ margLik <- function(tr, to, sr, so, x = 1, y = 1, m = 0, v = Inf, ...) {
     }
     res <- try(stats::integrate(f = intFun, lower = 0, upper = 1,
                                 ... = ...)$value)
-    if (class(res) == "try-error") {
+    if (inherits(res, "try-error")) {
         warnString <- paste("Numerical problems computing normalizing constant.",
                             "Try adjusting integration options \nwith ... argument.",
                             "See ?stats::integrate for available options.")

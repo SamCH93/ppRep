@@ -1,3 +1,60 @@
+#' @title Variance of normalized power prior
+#' @description This function computes the variance of a normalized power prior
+#'     conditional on a fixed power parameter and an initial normal prior for
+#'     the effect size.
+#' @param vardata Variance of the data.
+#' @param priorvar Variance parameter of initial normal prior. Defaults to Inf
+#'     (uniform prior).
+#' @param alpha Power parameter. Indicates to which power the likelihood of the
+#'     data is raised. Can be set to a number in [0, 1]. Defaults to 1.
+#'
+#' @return Prior variance
+#'
+#' @author Samuel Pawel
+#'
+#' @keywords internal
+postNormVar <- function(vardata, priorvar, alpha = 1) {
+    ## separate in two cases to avoid some numerical problems in special
+    ## situation when flat initial prior (v -> Inf) and alpha = 0
+    if (!is.finite(priorvar)) {
+        postvar <- vardata/alpha
+    } else {
+        postvar <- 1/(alpha/vardata + 1/priorvar)
+    }
+    return(postvar)
+}
+
+#' @title Mean of normalized power prior
+#' @description This function computes the mean of a normalized power prior
+#'     conditional on a fixed power parameter and an initial normal prior for
+#'     the effect size.
+#' @param dat Data.
+#' @param vardata Variance of the data.
+#' @param priormean Mean parameter of initial normal prior. Defaults to 0.
+#' @param priorvar Variance parameter of initial normal prior. Defaults to Inf
+#'     (uniform prior).
+#' @param alpha Power parameter. Indicates to which power the likelihood of the
+#'     data is raised. Can be set to a number in [0, 1]. Defaults to 1.
+#'
+#' @return Prior mean
+#'
+#' @author Samuel Pawel
+#'
+#' @keywords internal
+postNormMean <- function(dat, vardata, priormean, priorvar, alpha = 1) {
+    ## separate in two cases to avoid some numerical problems in special
+    ## situation when flat initial prior (v -> Inf) and alpha = 0
+    if (!is.finite(priorvar)) {
+        postmean <- dat
+    } else {
+        postvar <- postNormVar(vardata = vardata, priorvar = priorvar,
+                               alpha = alpha)
+        postmean <- postvar*(dat*alpha/vardata + priormean/priorvar)
+    }
+    return(postmean)
+}
+
+
 #' @title Posterior density of effect size and power parameter
 #'
 #' @description This function computes the posterior density of effect size
@@ -108,9 +165,10 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
         return(out)
     }
 
-    ## mean and variance of normalized power prior conditional on alpha
-    pvar <- 1/(alpha/so^2 + 1/v)
-    pmean <- pvar*(to*alpha/so^2 + m/v)
+    ## compute mean and variance of normalized power prior conditional on alpha
+    pvar <- postNormVar(vardata = so^2, priorvar = v, alpha = alpha)
+    pmean <- postNormMean(dat = to, vardata = so^2, priormean = m, priorvar = v,
+                          alpha = alpha)
 
     ## compute posterior density
     densProp <- stats::dnorm(x = tr, mean = theta, sd = sr) *
@@ -213,9 +271,10 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
         return(out)
     }
 
-    ## mean and variance of normalized power prior conditional on alpha
-    pvar <- 1/(alpha/so^2 + 1/v)
-    pmean <- pvar*(to*alpha/so^2 + m/v)
+    ## compute mean and variance of normalized power prior conditional on alpha
+    pvar <- postNormVar(vardata = so^2, priorvar = v, alpha = alpha)
+    pmean <- postNormMean(dat = to, vardata = so^2, priormean = m, priorvar = v,
+                          alpha = alpha)
 
     ## compute marginal posterior density
     margdensProp <- stats::dnorm(x = tr, mean = pmean, sd = sqrt(sr^2 + pvar)) *
@@ -320,9 +379,11 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
 
     ## alpha fixed
     if (!is.na(alpha)) {
-        ## mean and variance of normalized power prior conditional on alpha
-        pvar <- 1/(alpha/so^2 + 1/v)
-        pmean <- pvar*(to*alpha/so^2 + m/v)
+        ## compute mean and variance of normalized power prior conditional on
+        ## alpha
+        pvar <- postNormVar(vardata = so^2, priorvar = v, alpha = alpha)
+        pmean <- postNormMean(dat = to, vardata = so^2, priormean = m,
+                              priorvar = v, alpha = alpha)
         ## mean and variance of posterior
         postVar <- 1/(1/sr^2 + 1/pvar)
         postMean <- (tr/sr^2 + pmean/pvar)*postVar
@@ -338,30 +399,44 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
         }
 
         ## compute marginal posterior
-        margdens <- vapply(X = theta, FUN = function(thetai) {
-            ## integrate out power parameter alpha
-            intFun <- function(alpha) {
-                ## mean and variance of normalized power prior conditional on alpha
-                pvar <- 1/(alpha/so^2 + 1/v)
-                pmean <- pvar*(to*alpha/so^2 + m/v)
-                stats::dnorm(x = thetai, mean = pmean, sd = sqrt(pvar)) *
-                    stats::dbeta(x = alpha, shape1 = x, shape2 = y)
-            }
-            int <- try(stats::integrate(f = intFun, lower = 0, upper = 1,
-                                        ... = ...)$value)
-            if (class(int) == "try-error") {
-                margdens_i <- NaN
-                warnString <- paste("Numerical problems integrating out power parameter",
-                                    "from posterior. \nTry adjusting integration options",
-                                    "with ... argument. \nSee ?stats::integrate for",
-                                    "available options.")
-                warning(warnString)
-            }
-            else {
-                margdens_i <- stats::dnorm(x = tr, mean = thetai, sd = sr) * int / nC
-            }
-            return(margdens_i)
-        }, FUN.VALUE = 1)
+        ## 1) when flat prior for effect size (v = Inf), can compute using
+        ## confluent hypergeometric function
+        if (!is.finite(v)) {
+            margdens <- stats::dnorm(x = tr, mean = theta, sd = sr) *
+                abs(hypergeo::genhypergeo(U = x + 0.5, L = x + y + 0.5,
+                                          z = -(to - theta)^2/(2*so^2))) *
+                beta(a = x + 0.5, b = y) / nC / sqrt(2*pi*so^2) /
+                beta(a = x, b = y)
+        } else {
+            ## 2) otherwise use numerical integration
+            margdens <- vapply(X = theta, FUN = function(thetai) {
+                ## integrate out power parameter alpha
+                intFun <- function(alpha) {
+                    ## compute mean and variance of normalized power prior
+                    ## conditional on alpha
+                    pvar <- postNormVar(vardata = so^2, priorvar = v, alpha = alpha)
+                    pmean <- postNormMean(dat = to, vardata = so^2,
+                                          priormean = m, priorvar = v,
+                                          alpha = alpha)
+                    stats::dnorm(x = thetai, mean = pmean, sd = sqrt(pvar)) *
+                        stats::dbeta(x = alpha, shape1 = x, shape2 = y)
+                }
+                int <- try(stats::integrate(f = intFun, lower = 0, upper = 1,
+                                            ... = ...)$value)
+                if (inherits(int, "try-error")) {
+                    margdens_i <- NaN
+                    warnString <- paste("Numerical problems integrating out power parameter",
+                                        "from posterior. \nTry adjusting integration options",
+                                        "with ... argument. \nSee ?stats::integrate for",
+                                        "available options.")
+                    warning(warnString)
+                }
+                else {
+                    margdens_i <- stats::dnorm(x = tr, mean = thetai, sd = sr) * int / nC
+                }
+                return(margdens_i)
+            }, FUN.VALUE = 1)
+        }
     }
     return(margdens)
 }
