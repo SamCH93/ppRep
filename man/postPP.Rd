@@ -4,7 +4,7 @@
 \alias{postPP}
 \title{Posterior density of effect size and power parameter}
 \usage{
-postPP(theta, alpha, tr, sr, to, so, x = 1, y = 1, ...)
+postPP(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf, ...)
 }
 \arguments{
 \item{theta}{Effect size. Has to be of length one or the same length as
@@ -27,6 +27,12 @@ Defaults to 1.}
 \item{y}{Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
 Defaults to 1.}
 
+\item{m}{Mean parameter of initial normal prior for \eqn{\theta}{theta}.
+Defaults to 0.}
+
+\item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
+Defaults to Inf (uniform prior).}
+
 \item{...}{Additional arguments for integration function.}
 }
 \value{
@@ -36,8 +42,9 @@ Posterior density
 This function computes the posterior density of effect size
     \eqn{\theta}{theta} and power parameter \eqn{\alpha}{alpha} assuming a
     normal likelihood for original and replication effect estimate. A power
-    prior for \eqn{\theta}{theta} is constructed by updating an initial flat
-    prior with the likelihood of the original data raised to the power of
+    prior for \eqn{\theta}{theta} is constructed by updating an initial
+    normal prior \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~
+    N(m, v)} with the likelihood of the original data raised to the power of
     \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
     \mbox{Beta}(x, y)}{alpha ~ Beta(x, y)} is assumed.
 }

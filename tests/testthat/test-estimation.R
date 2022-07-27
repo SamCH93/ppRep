@@ -36,7 +36,7 @@ test_that("marginal posterior of alpha integrates to one", {
 })
 
 
-## ## TODO this doesn't work yet.... some parts where integral divergent
+## ## TODO this doesn't work yet.... some parts where numerical problems
 ## thetaseq <- seq(-3, 3, length.out = 1000)
 ## postdens <- postPPtheta(theta = thetaseq, tr = tr, sr = sr, to = to, so = so,
 ##                         x = x, y = y)

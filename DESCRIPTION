@@ -1,5 +1,5 @@
 Package: ppRep
-Title: Analysis of replication studies using power priors
+Title: Analysis of Replication Studies using Power Priors
 Version: 0.42
 Authors@R:
     person(given = "Samuel",
@@ -10,6 +10,6 @@ Authors@R:
 Description: Provides functionality for estimation and testing of effect sizes based on original and replication study using a power prior approach.
 License: GPL-3
 Encoding: UTF-8
-Imports:
+Imports: hypergeo
 Suggests: roxygen2, testthat
 RoxygenNote: 7.1.2

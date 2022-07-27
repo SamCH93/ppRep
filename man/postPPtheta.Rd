@@ -4,7 +4,19 @@
 \alias{postPPtheta}
 \title{Marginal posterior density of effect size}
 \usage{
-postPPtheta(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, ...)
+postPPtheta(
+  theta,
+  tr,
+  sr,
+  to,
+  so,
+  x = 1,
+  y = 1,
+  alpha = NA,
+  m = 0,
+  v = Inf,
+  ...
+)
 }
 \arguments{
 \item{theta}{Effect size. Can be a vector.}
@@ -28,6 +40,12 @@ when \code{alpha = NA}.}
 \item{alpha}{Power parameter. Can be set to a number between 0 and 1.
 Defaults to \code{NA}.}
 
+\item{m}{Mean parameter of initial normal prior for \eqn{\theta}{theta}.
+Defaults to 0.}
+
+\item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
+Defaults to Inf (uniform prior).}
+
 \item{...}{Additional arguments for integration function.}
 }
 \value{
@@ -36,10 +54,11 @@ Marginal posterior density of effect size
 \description{
 This function computes the marginal posterior density of the
     effect size \eqn{\theta}{theta}. A power prior for \eqn{\theta}{theta} is
-    constructed by updating an initial flat prior with likelihood of the
+    constructed by updating an initial normal prior \eqn{\theta \sim
+    \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with likelihood of the
     original data raised to the power of \eqn{\alpha}{alpha}. The power
     parameter \eqn{\alpha}{alpha} can either be fixed to some value between 0
-    and 1, or it can have a Beta distribution \eqn{\alpha \sim
+    and 1, or it can have a beta prior distribution \eqn{\alpha \sim
     \mbox{Beta}(\code{x}, \code{y})}{alpha ~ Beta(\code{x}, \code{y})}.
 }
 \examples{

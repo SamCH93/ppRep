@@ -4,7 +4,7 @@
 \alias{postPPalpha}
 \title{Marginal posterior density of power parameter}
 \usage{
-postPPalpha(alpha, tr, sr, to, so, x = 1, y = 1, ...)
+postPPalpha(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf, ...)
 }
 \arguments{
 \item{alpha}{Power parameter. Can be a vector.}
@@ -23,6 +23,12 @@ Defaults to 1.}
 \item{y}{Number of failures parameter of beta prior \eqn{\alpha}{alpha}.
 Defaults to 1.}
 
+\item{m}{Mean parameter of initial normal prior for \eqn{\theta}{theta}.
+Defaults to 0.}
+
+\item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
+Defaults to Inf (uniform prior).}
+
 \item{...}{Additional arguments for integration function.}
 }
 \value{
@@ -31,7 +37,8 @@ Marginal posterior density of power parameter
 \description{
 This function computes the marginal posterior density of the
     power parameter \eqn{\alpha}{alpha}. A power prior for
-    \eqn{\theta}{theta} is constructed by updating an initial flat prior with
+    \eqn{\theta}{theta} is constructed by updating an initial normal prior
+    \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with
     the likelihood of the original data raised to the power of
     \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
     \mbox{Beta}(x, y)}{alpha ~ Beta(x, y)} is assumed.
