@@ -40,3 +40,4 @@ filled.contour(x = theta, y = alpha, z = postdensMat,
                color.palette = function(n) hcl.colors(n = n, palette = "viridis"))
 ```
 ![Plot of joint posterior distribution of power parameter and effect size.](posterior.png)
+
