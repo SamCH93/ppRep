@@ -1,0 +1,17 @@
+citHeader(paste("To cite the R-package 'ciCalibrate' in publications,",
+                "please use:"))
+
+bibentry(bibtype = "Misc",
+         title = "Power Priors for Replication Studies",
+         author = c(person(given = "Samuel", family = "Pawel", role = "aut"),
+                    person(given = "Frederik", family = "Aust", role = "aut"),
+                    person(given = "Leonhard", family = "Held", role = "aut"),
+                    person(given = "Eric-Jan", family = "Wagenmakers", role = "aut")),
+         doi = "10.48550/arXiv.2207.14720",
+         ## journal = "",
+         ## volume = "",
+         ## number = "",
+         ## pages = "",
+         note = "arXiv Preprint",
+         year = "2022"
+         )

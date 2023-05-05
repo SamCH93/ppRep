@@ -1,12 +1,12 @@
 # ppRep
 
 **ppRep** is an R package for Bayesian estimation and testing of effect sizes
-based on original and replication study using the power prior framework. For more
-information, see the preprint
+based on original and replication study using a power prior framework for
+dynamic discounting of the original data. For more information, see the preprint
 
 Pawel, S., Aust, F., Held, L., and Wagenmakers, E.-J. (2022). Power Priors for
-  Replication Studies. To appear on arXiv soon.
-  doi:[10.48550/arXiv.XXXX.XXXXX](https://doi.org/10.48550/arXiv.XXXX.XXXXX)
+  Replication Studies.
+  doi:[10.48550/arXiv.2207.14720](https://doi.org/10.48550/arXiv.2207.14720)
 
 ## Installation
 

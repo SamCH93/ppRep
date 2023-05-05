@@ -36,6 +36,6 @@ cran: $(TAR)
 	R -e 'devtools::check_built(path = "out/$(TAR)", cran = TRUE, remote = TRUE)'
 
 test:
-	R -e 'devtools::test()'
+	R -e 'tinytest::build_install_test(pkgdir = ".")'
 
 .PHONY: all document manual build install check cran description test
