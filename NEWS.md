@@ -8,3 +8,4 @@
   * `postPP`
   * `postPPalpha`
   * `postPPtheta`
+  * `plotPP`

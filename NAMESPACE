@@ -3,6 +3,7 @@
 export(bfPPalpha)
 export(bfPPtheta)
 export(margLik)
+export(plotPP)
 export(postPP)
 export(postPPalpha)
 export(postPPtheta)

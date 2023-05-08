@@ -1,6 +1,6 @@
 Package: ppRep
 Version: 0.42
-Date: 2023-05-05
+Date: 2023-05-08
 Authors@R:
     person(given = "Samuel",
            family = "Pawel",
@@ -10,7 +10,7 @@ Authors@R:
 Author: Samuel Pawel [aut, cre] (<https://orcid.org/0000-0003-2779-320X>)
 Maintainer: Samuel Pawel <samuel.pawel@uzh.ch>
 Title: Analysis of Replication Studies using Power Priors
-Description: Provides functionality for Bayesian estimation and testing of effect sizes based on original and replication study using power prior approaches (Pawel et al., 2022) <doi:>.
+Description: Provides functionality for Bayesian estimation and testing of effect sizes based on original and replication study using power prior approaches (Pawel et al., 2022) <doi:10.48550/arXiv.2207.14720>.
 License: GPL-3
 Encoding: UTF-8
 Imports: hypergeo
