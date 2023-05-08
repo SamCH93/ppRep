@@ -11,6 +11,6 @@ The ppRep package includes methods for Bayesian estimation and
 }
 \references{
 Pawel, S., Aust, F., Held, L., and Wagenmakers, E.-J. (2022).
-    Power Priors for Replication Studies. Preprint
-    \doi{10.48550/arXiv.XXXX.XXXXX}
+    Power Priors for Replication Studies. arXiv preprint.
+    \doi{10.48550/arXiv.2207.14720}
 }

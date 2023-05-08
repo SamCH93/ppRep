@@ -440,3 +440,147 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
     }
     return(margdens)
 }
+
+
+#' @title Joint and marginal posterior density plots
+#'
+#' @description This convenience function computes (and, if desired, visualizes)
+#'     the joint posterior density of effect size \eqn{\theta}{theta} and power
+#'     parameter \eqn{\alpha}{alpha}, as well as the marginal posterior
+#'     densities of effect size and power parameter individually. See the
+#'     functions \code{\link{postPP}}, \code{\link{postPPalpha}}, and
+#'     \code{\link{postPPtheta}} for more details on their computation.
+#'
+#' @param tr Effect estimate of the replication study.
+#' @param to Effect estimate of the original study.
+#' @param sr Standard error of the replication effect estimate.
+#' @param so Standard error of the replication effect estimate.
+#' @param x Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
+#'     Defaults to 1.
+#' @param y Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
+#'     Defaults to 1.
+#' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
+#'     Defaults to 0.
+#' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
+#'     Defaults to Inf (uniform prior).
+#' @param thetaRange Range of effect sizes
+#' @param alphaRange Range of power parameters
+#' @param nGrid Number of grid points
+#' @param plot Logical indicating whether data should be plotted. If
+#'     \code{FALSE} only returns data for plotting.
+#' @param ... Additional arguments passed to plot function.
+#'
+#' @return Plots joint and marginal posterior densities, invisibly returns the
+#'     data for the plots
+#'
+#' @author Samuel Pawel
+#'
+#' @seealso \code{\link{postPP}}, \code{\link{postPPalpha}}, \code{\link{postPPtheta}}
+#'
+#' @examples
+#' plotPP(tr = 0.2, sr = 0.05, to = 0.15, so = 0.05)
+#' @export
+
+plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
+                   thetaRange = c(tr - 3*sr, tr + 3*sr),
+                   alphaRange = c(0, 1), nGrid = 100, plot = TRUE, ...) {
+    ## input checks
+    stopifnot(
+        length(tr) == 1,
+        is.numeric(tr),
+        is.finite(tr),
+
+        length(to) == 1,
+        is.numeric(to),
+        is.finite(to),
+
+        length(sr) == 1,
+        is.numeric(sr),
+        is.finite(sr),
+        0 < sr,
+
+        length(so) == 1,
+        is.numeric(so),
+        is.finite(so),
+        0 < so,
+
+        length(x) == 1,
+        is.numeric(x),
+        is.finite(x),
+        0 <= x,
+
+        length(y) == 1,
+        is.numeric(y),
+        is.finite(y),
+        0 <= y,
+
+        length(m) == 1,
+        is.numeric(m),
+        is.finite(m),
+
+        length(v) == 1,
+        is.numeric(v),
+        0 < v,
+
+        length(alphaRange) == 2,
+        all(is.numeric(alphaRange)),
+        all(is.finite(alphaRange)),
+        alphaRange[2] > alphaRange[1],
+        0 <= alphaRange[1],
+        alphaRange[2] <= 1,
+
+        length(thetaRange) == 2,
+        all(is.numeric(thetaRange)),
+        all(is.finite(thetaRange)),
+        alphaRange[2] > alphaRange[1],
+
+        length(nGrid) == 1,
+        is.numeric(nGrid),
+        is.finite(nGrid),
+        0 < nGrid,
+
+        length(plot) == 1,
+        is.logical(plot),
+        !is.na(plot)
+    )
+
+    ## grids for computing the densities
+    alphaGrid <- seq(alphaRange[1], alphaRange[2], length.out = nGrid)
+    thetaGrid <- seq(thetaRange[1], thetaRange[2], length.out = nGrid)
+    jointGrid <- expand.grid(alpha = alphaGrid, theta = thetaGrid)
+
+    ## compute densities
+    jointdens <- postPP(theta = jointGrid$theta, alpha = jointGrid$alpha, tr = tr,
+                        sr = sr, to = to, so = so, x = x, y = y, m = m, v = v)
+    alphadens <- postPPalpha(alpha = alphaGrid, tr = tr, sr = sr, to = to,
+                             so = so, x = x, y = y, m = m, v = v)
+    thetadens <- postPPtheta(theta = thetaGrid, tr = tr, sr = sr, to = to,
+                             so = so, x = x, y = y, m = m, v = v)
+
+    if (plot) {
+    graphics::layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE))
+    ## joint density
+    jointdensMat <- matrix(data = jointdens, ncol = nGrid, byrow = TRUE)
+    graphics::image(x = thetaGrid, y = alphaGrid, z = jointdensMat,
+                    xlab = bquote("Effect size" ~ theta),
+                    ylab = bquote("Power parameter" ~ alpha),
+                    main = "Joint posterior density",
+                    col = grDevices::hcl.colors(n = 100, palette = "viridis"),
+                    las = 1)
+    ## power parameter
+    plot(alphaGrid, alphadens, xlab = bquote("Power parameter" ~ alpha),
+         ylab = "Marginal posterior density", type = "l", las = 1)
+    ## effect size
+    plot(thetaGrid, thetadens, xlab = bquote("Effect size" ~ theta),
+         ylab = "Marginal posterior density", type = "l", las = 1)
+    }
+
+    ## return plot data
+    out <- list(jointDF = data.frame(jointGrid, density = jointdens),
+                alphaDF = data.frame(alpha = alphaGrid,
+                                     density = alphadens),
+                thetaDF = data.frame(theta = thetaGrid,
+                                     density = thetadens))
+    invisible(out)
+
+}
