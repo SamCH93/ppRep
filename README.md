@@ -25,18 +25,7 @@ so <- 0.05 # original standard error
 tr <- 0.1 # replication effect estimate
 sr <- 0.05 # replication standard error
 
-## grid of power parameter and effect size for joint posterior
-alpha <- seq(0, 1, length.out = 200)
-theta <- seq(0, 0.3, length.out = 200)
-parGrid <- expand.grid(alpha = alpha, theta = theta)
-
 ## compute and plot posterior density
-postdens <- postPP(theta = parGrid$theta, alpha = parGrid$alpha, tr = tr,
-                   sr = sr, to = to, so = so)
-postdensMat <- matrix(data = postdens, ncol = 200, byrow = TRUE)
-filled.contour(x = theta, y = alpha, z = postdensMat,
-               xlab = bquote("Effect size" ~ theta),
-               ylab = bquote("Power parameter" ~ alpha), nlevels = 15,
-               color.palette = function(n) hcl.colors(n = n, palette = "viridis"))
+plotPP(tr = tr, sr = sr, to = to, so = so)
 ```
 ![Plot of joint posterior distribution of power parameter and effect size.](posterior.png)
