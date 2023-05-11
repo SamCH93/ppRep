@@ -564,9 +564,12 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
     graphics::image(x = thetaGrid, y = alphaGrid, z = jointdensMat,
                     xlab = bquote("Effect size" ~ theta),
                     ylab = bquote("Power parameter" ~ alpha),
-                    main = "Joint posterior density",
-                    col = grDevices::hcl.colors(n = 100, palette = "viridis"),
+                    main = bquote(plain("Joint posterior density")),
+                    col = grDevices::hcl.colors(n = 100, palette = "Blues 3",
+                                                rev = TRUE),
                     las = 1)
+    graphics::contour(x = thetaGrid, y = alphaGrid, z = jointdensMat, add = TRUE,
+                      drawlabels = FALSE, nlevels = 5, col = "#00000080")
     ## power parameter
     plot(alphaGrid, alphadens, xlab = bquote("Power parameter" ~ alpha),
          ylab = "Marginal posterior density", type = "l", las = 1)
