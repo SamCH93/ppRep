@@ -41,28 +41,31 @@ Defaults to 0.}
 \item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
 Defaults to Inf (uniform prior).}
 
-\item{thetaRange}{Range of effect sizes}
+\item{thetaRange}{Range of effect sizes. Defaults to three standard errors
+around the replication effect estimate.}
 
-\item{alphaRange}{Range of power parameters}
+\item{alphaRange}{Range of power parameters. Defaults to the range between
+zero and one.}
 
-\item{nGrid}{Number of grid points}
+\item{nGrid}{Number of grid points. Defaults to 100.}
 
 \item{plot}{Logical indicating whether data should be plotted. If
-\code{FALSE} only returns data for plotting.}
+\code{FALSE} only the data used for plotting are returned.}
 
-\item{...}{Additional arguments passed to plot function.}
+\item{...}{Additional arguments passed to \code{plot} function.}
 }
 \value{
 Plots joint and marginal posterior densities, invisibly returns the
-    data for the plots
+    data for the plots.
 }
 \description{
-This convenience function computes (and, if desired, visualizes)
+This convenience function computes and, if desired, visualizes
     the joint posterior density of effect size \eqn{\theta}{theta} and power
     parameter \eqn{\alpha}{alpha}, as well as the marginal posterior
-    densities of effect size and power parameter individually. See the
-    functions \code{\link{postPP}}, \code{\link{postPPalpha}}, and
-    \code{\link{postPPtheta}} for more details on their computation.
+    densities of effect size \eqn{\theta}{theta} and power parameter
+    \eqn{\alpha}{alpha} individually. See the functions \code{\link{postPP}},
+    \code{\link{postPPalpha}}, and \code{\link{postPPtheta}} for more details
+    on their computation.
 }
 \examples{
 plotPP(tr = 0.2, sr = 0.05, to = 0.15, so = 0.05)

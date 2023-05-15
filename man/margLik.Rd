@@ -2,7 +2,7 @@
 % Please edit documentation in R/margLik.R
 \name{margLik}
 \alias{margLik}
-\title{Marginal likelihood of replication effect estimate under power prior model}
+\title{Marginal likelihood of replication effect estimate}
 \usage{
 margLik(tr, to, sr, so, x = 1, y = 1, m = 0, v = Inf, ...)
 }

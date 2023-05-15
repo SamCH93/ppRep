@@ -1,4 +1,4 @@
-#' @title Marginal likelihood of replication effect estimate under power prior model
+#' @title Marginal likelihood of replication effect estimate
 #'
 #' @description This function computes the marginal likelihood of the
 #'     replication effect estimate \code{tr} under the power prior model

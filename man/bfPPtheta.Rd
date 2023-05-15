@@ -15,13 +15,13 @@ bfPPtheta(tr, sr, to, so, x = 1, y = 1, alpha = NA, ...)
 
 \item{so}{Standard error of the replication effect estimate.}
 
-\item{x}{Number of successes parameter \eqn{x}{x} for beta prior of power
-parameter under \eqn{H_1}{H1}. Defaults to 1. Is only taken into account
-when \code{alpha = NA}.}
+\item{x}{Number of successes parameter for beta prior of power parameter
+under \eqn{H_1}{H1}. Defaults to 1. Is only taken into account when
+\code{alpha = NA}.}
 
-\item{y}{Number of failures parameter \eqn{y}{y} for beta prior of power
-parameter under \eqn{H_1}{H1}. Defaults to 1. Is only taken into account
-when \code{alpha = NA}.}
+\item{y}{Number of failures parameter for beta prior of power parameter under
+\eqn{H_1}{H1}. Defaults to 1. Is only taken into account when \code{alpha
+= NA}.}
 
 \item{alpha}{Power parameter under \eqn{H_1}{H1}. Can be set to a number
 between 0 and 1. Defaults to \code{NA}.}
@@ -33,15 +33,15 @@ Bayes factor (BF > 1 indicates evidence for \eqn{H_0}{H0}, whereas BF
     < 1 indicates evidence for \eqn{H_1}{H1})
 }
 \description{
-This function computes the Bayes factor contrasting \eqn{H_0 :
-    \theta = 0}{H0: theta = 0} to \eqn{H_1 : \theta \sim f(\theta |
-    \code{to}, \code{so}, \alpha)}{H1: theta ~ f(theta|original data, alpha)}
-    for the replication data assuming a normal likelihood. The prior of the
-    effect size \eqn{\theta}{theta} under \eqn{H_1}{H1} is the posterior of
-    the effect size obtained from combining an initial flat prior with a
-    normal likelihood of the original data raised to the power of
-    \eqn{\alpha}{alpha}. Under \eqn{H_1}{H1}, the power parameter can either
-    be fixed to some value between 0 and 1, or it can have a Beta
+This function computes the Bayes factor contrasting
+    \eqn{H_0\colon \theta = 0}{H0: theta = 0} to \eqn{H_1\colon \theta \sim
+    f(\theta | \code{to}, \code{so}, \alpha)}{H1: theta ~ f(theta|original
+    data, alpha)} for the replication data assuming a normal likelihood. The
+    prior of the effect size \eqn{\theta}{theta} under \eqn{H_1}{H1} is the
+    posterior of the effect size obtained from combining a normal likelihood
+    of the original data raised to the power of \eqn{\alpha}{alpha} with a
+    flat initial prior with a. Under \eqn{H_1}{H1}, the power parameter can
+    either be fixed to some value between 0 and 1, or it can have a Beta
     distribution \eqn{\alpha | H_1 \sim \mbox{Beta}(\code{x},
     \code{y})}{alpha|H1 ~ Beta(\code{x}, \code{y})}.
 }

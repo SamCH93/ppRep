@@ -29,11 +29,11 @@ postPPtheta(
 
 \item{so}{Standard error of the replication effect estimate.}
 
-\item{x}{Number of successes parameter \eqn{x}{x} for beta prior of power
+\item{x}{Number of successes parameter for beta prior of power
 parameter \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account
 when \code{alpha = NA}.}
 
-\item{y}{Number of failures parameter \eqn{y}{y} for beta prior of power
+\item{y}{Number of failures parameter for beta prior of power
 parameter \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account
 when \code{alpha = NA}.}
 
@@ -58,8 +58,8 @@ This function computes the marginal posterior density of the
     \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with likelihood of the
     original data raised to the power of \eqn{\alpha}{alpha}. The power
     parameter \eqn{\alpha}{alpha} can either be fixed to some value between 0
-    and 1, or it can have a beta prior distribution \eqn{\alpha \sim
-    \mbox{Beta}(\code{x}, \code{y})}{alpha ~ Beta(\code{x}, \code{y})}.
+    and 1 or it can have a beta prior distribution \eqn{\alpha \sim
+    \mbox{Beta}(\code{x}, \code{y})}{alpha ~ Beta(x,y)}.
 }
 \examples{
 theta <- seq(0, 0.6, 0.001)

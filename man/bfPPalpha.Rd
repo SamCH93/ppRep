@@ -15,14 +15,14 @@ bfPPalpha(tr, sr, to, so, y = 2, uv = NA, ...)
 
 \item{so}{Standard error of the replication effect estimate.}
 
-\item{y}{Number of failures parameter \eqn{y}{y} for beta prior of power
-parameter under \eqn{H_0}{H0}. Has to be larger than 1 so that density is
-monotonically decreasing. Defaults to 2 (a linearly decreasing prior with
-zero density at 1). Is only taken into account when \code{uv = NA}.}
+\item{y}{Number of failures parameter for beta prior of power parameter under
+\eqn{H_0}{H0}. Has to be larger than 1 so that density is monotonically
+decreasing. Defaults to 2 (a linearly decreasing prior with zero density
+at 1). Is only taken into account when \code{uv = NA}.}
 
 \item{uv}{Variance of the unit-information prior for the effect size that is
-used for testing the simple hypothesis H0: alpha = 0. Defaults to
-\code{NA}.}
+used for testing the simple hypothesis \eqn{H_0 \colon \alpha = 0}{H0:
+alpha = 0}. Defaults to \code{NA}.}
 
 \item{...}{Additional arguments for integration function.}
 }
@@ -31,19 +31,19 @@ Bayes factor (BF > 1 indicates evidence for \eqn{H_0}{H0}, whereas BF
     < 1 indicates evidence for \eqn{H_1}{H1})
 }
 \description{
-This function computes the Bayes factor contrasting \eqn{H_1 :
-    \alpha = 1}{H1: alpha = 1} to \eqn{H_0 : \alpha < 1}{H0: alpha < 1} for
-    the replication data assuming a normal likelihood. The power parameter
-    \eqn{\alpha}{alpha} indicates how much the normal likelihood of the
-    original is raised and then incorporated in the power prior for the
-    effect size \eqn{\theta}{theta} (e.g. for \eqn{\alpha = 0}{alpha = 0} the
-    original data are completely discounted). Under \eqn{H_0}{H0}, the power
-    parameter can either be fixed to 0, or it can have a Beta distribution
-    \eqn{\alpha | H_0 \sim \mbox{Beta}(1, \code{y})}{alpha|H0 ~ Beta(1,
-    \code{y})}. For the fixed power parameter case, the specification of an
-    initial unit-information prior \eqn{\theta \sim \mathrm{N}(0,
-    \mbox{uv})}{theta ~ N(0, uv)} for the effect size \eqn{\theta}{theta} is
-    required.
+This function computes the Bayes factor contrasting
+    \eqn{H_1\colon \alpha = 1}{H1: alpha = 1} to \eqn{H_0\colon \alpha <
+    1}{H0: alpha < 1} for the replication data assuming a normal likelihood.
+    The power parameter \eqn{\alpha}{alpha} indicates how much the normal
+    likelihood of the original data is raised to and then incorporated in the
+    prior for the effect size \eqn{\theta}{theta} (e.g., for \eqn{\alpha =
+    0}{alpha = 0} the original data are completely discounted). Under
+    \eqn{H_0}{H0}, the power parameter can either be fixed to 0, or it can
+    have a Beta distribution \eqn{\alpha | H_0 \sim \mbox{Beta}(1,
+    \code{y})}{alpha|H0 ~ Beta(1, \code{y})}. For the fixed power parameter
+    case, the specification of an unit-information prior \eqn{\theta \sim
+    \mathrm{N}(0, \mbox{uv})}{theta ~ N(0, uv)} for the effect size
+    \eqn{\theta}{theta} is required as the prior is otherwise not proper.
 }
 \examples{
 ## use unit variance of 2

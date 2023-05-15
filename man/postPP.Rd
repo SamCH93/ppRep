@@ -46,7 +46,7 @@ This function computes the posterior density of effect size
     normal prior \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~
     N(m, v)} with the likelihood of the original data raised to the power of
     \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
-    \mbox{Beta}(x, y)}{alpha ~ Beta(x, y)} is assumed.
+    \mbox{Beta}(\code{x},\code{y})}{alpha ~ Beta(x, y)} is assumed.
 }
 \examples{
 alpha <- seq(0, 1, length.out = 200)

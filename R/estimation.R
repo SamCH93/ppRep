@@ -64,7 +64,7 @@ postNormMean <- function(dat, vardata, priormean, priorvar, alpha = 1) {
 #'     normal prior \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~
 #'     N(m, v)} with the likelihood of the original data raised to the power of
 #'     \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
-#'     \mbox{Beta}(x, y)}{alpha ~ Beta(x, y)} is assumed.
+#'     \mbox{Beta}(\code{x},\code{y})}{alpha ~ Beta(x, y)} is assumed.
 #'
 #' @param theta Effect size. Has to be of length one or the same length as
 #'     \code{alpha}.
@@ -187,7 +187,7 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 #'     \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with
 #'     the likelihood of the original data raised to the power of
 #'     \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
-#'     \mbox{Beta}(x, y)}{alpha ~ Beta(x, y)} is assumed.
+#'     \mbox{Beta}(\code{x},\code{y})}{alpha ~ Beta(x, y)} is assumed.
 #'
 #' @param alpha Power parameter. Can be a vector.
 #' @param tr Effect estimate of the replication study.
@@ -291,18 +291,18 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 #'     \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with likelihood of the
 #'     original data raised to the power of \eqn{\alpha}{alpha}. The power
 #'     parameter \eqn{\alpha}{alpha} can either be fixed to some value between 0
-#'     and 1, or it can have a beta prior distribution \eqn{\alpha \sim
-#'     \mbox{Beta}(\code{x}, \code{y})}{alpha ~ Beta(\code{x}, \code{y})}.
+#'     and 1 or it can have a beta prior distribution \eqn{\alpha \sim
+#'     \mbox{Beta}(\code{x}, \code{y})}{alpha ~ Beta(x,y)}.
 #'
 #' @param theta Effect size. Can be a vector.
 #' @param tr Effect estimate of the replication study.
 #' @param to Effect estimate of the original study.
 #' @param sr Standard error of the replication effect estimate.
 #' @param so Standard error of the replication effect estimate.
-#' @param x Number of successes parameter \eqn{x}{x} for beta prior of power
+#' @param x Number of successes parameter for beta prior of power
 #'     parameter \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account
 #'     when \code{alpha = NA}.
-#' @param y Number of failures parameter \eqn{y}{y} for beta prior of power
+#' @param y Number of failures parameter for beta prior of power
 #'     parameter \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account
 #'     when \code{alpha = NA}.
 #' @param alpha Power parameter. Can be set to a number between 0 and 1.
@@ -444,12 +444,13 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
 
 #' @title Joint and marginal posterior density plots
 #'
-#' @description This convenience function computes (and, if desired, visualizes)
+#' @description This convenience function computes and, if desired, visualizes
 #'     the joint posterior density of effect size \eqn{\theta}{theta} and power
 #'     parameter \eqn{\alpha}{alpha}, as well as the marginal posterior
-#'     densities of effect size and power parameter individually. See the
-#'     functions \code{\link{postPP}}, \code{\link{postPPalpha}}, and
-#'     \code{\link{postPPtheta}} for more details on their computation.
+#'     densities of effect size \eqn{\theta}{theta} and power parameter
+#'     \eqn{\alpha}{alpha} individually. See the functions \code{\link{postPP}},
+#'     \code{\link{postPPalpha}}, and \code{\link{postPPtheta}} for more details
+#'     on their computation.
 #'
 #' @param tr Effect estimate of the replication study.
 #' @param to Effect estimate of the original study.
@@ -463,15 +464,17 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
 #'     Defaults to 0.
 #' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
 #'     Defaults to Inf (uniform prior).
-#' @param thetaRange Range of effect sizes
-#' @param alphaRange Range of power parameters
-#' @param nGrid Number of grid points
+#' @param thetaRange Range of effect sizes. Defaults to three standard errors
+#'     around the replication effect estimate.
+#' @param alphaRange Range of power parameters. Defaults to the range between
+#'     zero and one.
+#' @param nGrid Number of grid points. Defaults to 100.
 #' @param plot Logical indicating whether data should be plotted. If
-#'     \code{FALSE} only returns data for plotting.
-#' @param ... Additional arguments passed to plot function.
+#'     \code{FALSE} only the data used for plotting are returned.
+#' @param ... Additional arguments passed to \code{plot} function.
 #'
 #' @return Plots joint and marginal posterior densities, invisibly returns the
-#'     data for the plots
+#'     data for the plots.
 #'
 #' @author Samuel Pawel
 #'
