@@ -561,24 +561,26 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
                              so = so, x = x, y = y, m = m, v = v)
 
     if (plot) {
-    graphics::layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE))
-    ## joint density
-    jointdensMat <- matrix(data = jointdens, ncol = nGrid, byrow = TRUE)
-    graphics::image(x = thetaGrid, y = alphaGrid, z = jointdensMat,
-                    xlab = bquote("Effect size" ~ theta),
-                    ylab = bquote("Power parameter" ~ alpha),
-                    main = bquote(plain("Joint posterior density")),
-                    col = grDevices::hcl.colors(n = 100, palette = "Blues 3",
-                                                rev = TRUE),
-                    las = 1)
-    graphics::contour(x = thetaGrid, y = alphaGrid, z = jointdensMat, add = TRUE,
-                      drawlabels = FALSE, nlevels = 5, col = "#00000080")
-    ## power parameter
-    plot(alphaGrid, alphadens, xlab = bquote("Power parameter" ~ alpha),
-         ylab = "Marginal posterior density", type = "l", las = 1)
-    ## effect size
-    plot(thetaGrid, thetadens, xlab = bquote("Effect size" ~ theta),
-         ylab = "Marginal posterior density", type = "l", las = 1)
+        oldpar <- graphics::par("mfrow")
+        graphics::layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE))
+        ## joint density
+        jointdensMat <- matrix(data = jointdens, ncol = nGrid, byrow = TRUE)
+        graphics::image(x = thetaGrid, y = alphaGrid, z = jointdensMat,
+                        xlab = bquote("Effect size" ~ theta),
+                        ylab = bquote("Power parameter" ~ alpha),
+                        main = bquote(plain("Joint posterior density")),
+                        col = grDevices::hcl.colors(n = 100, palette = "Blues 3",
+                                                    rev = TRUE),
+                        las = 1)
+        graphics::contour(x = thetaGrid, y = alphaGrid, z = jointdensMat, add = TRUE,
+                          drawlabels = FALSE, nlevels = 5, col = "#00000080")
+        ## power parameter
+        plot(alphaGrid, alphadens, xlab = bquote("Power parameter" ~ alpha),
+             ylab = "Marginal posterior density", type = "l", las = 1)
+        ## effect size
+        plot(thetaGrid, thetadens, xlab = bquote("Effect size" ~ theta),
+             ylab = "Marginal posterior density", type = "l", las = 1)
+        graphics::par(mfrow = oldpar)
     }
 
     ## return plot data
