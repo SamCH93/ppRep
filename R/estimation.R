@@ -647,6 +647,9 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
 #' @param nGrid Number of grid points. Defaults to 100.
 #' @param plot Logical indicating whether data should be plotted. If
 #'     \code{FALSE} only the data used for plotting are returned.
+#' @param CI Logical indicating whether 95% highest posterior credible intervals
+#'     should be plotted. Defaults to \code{FALSE} because computing them takes
+#'     some time.
 #' @param ... Additional arguments passed to \code{plot} function.
 #'
 #' @return Plots joint and marginal posterior densities, invisibly returns the
@@ -662,7 +665,8 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
 
 plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
                    thetaRange = c(tr - 3*sr, tr + 3*sr),
-                   alphaRange = c(0, 1), nGrid = 100, plot = TRUE, ...) {
+                   alphaRange = c(0, 1), nGrid = 100, plot = TRUE,
+                   CI = FALSE, ...) {
     ## input checks
     stopifnot(
         length(tr) == 1,
@@ -720,7 +724,11 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 
         length(plot) == 1,
         is.logical(plot),
-        !is.na(plot)
+        !is.na(plot),
+
+        length(CI) == 1,
+        is.logical(CI),
+        !is.na(CI)
     )
 
     ## grids for computing the densities
@@ -737,15 +745,17 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
                              so = so, x = x, y = y, m = m, v = v)
 
     ## compute HPD intervals
-    level <- 0.95
-    aFun <- function(a) {
-        postPPalpha(alpha = a, tr = tr, sr = sr, to = to, so = so, x = x, y = y,
-                    m = m, v = v)
+    if (CI == TRUE) {
+        alphaCI <- postPPalphaHPD(level = 0.95, tr = tr, sr = sr, to = to,
+                                  so = so, x = x, y = y, m = m, v = v)
+        thetaCI <- postPPthetaHPD(level = 0.95, tr = tr, sr = sr, to = to,
+                                  so = so, x = x, y = y, m = m, v = v)
+    } else {
+        alphaCI <- c(NA, NA)
+        thetaCI <- c(NA, NA)
     }
-    tFun <- function(t) {
-        postPPtheta(theta = t, tr = tr, sr = sr, to = to, so = so, x = x, y = y,
-                    m = m, v = v)
-    }
+
+
 
     if (plot) {
         oldpar <- graphics::par("mfrow", "mar")
@@ -766,10 +776,22 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
         graphics::par(mar = oldpar$mar)
         ## power parameter
         plot(alphaGrid, alphadens, xlab = bquote("Power parameter" ~ alpha),
-             ylab = "Marginal posterior density", type = "l", las = 1)
+             ylab = "Marginal posterior density", type = "l", las = 1,
+             ylim = c(0, max(alphadens)*1.1))
+        if (CI == TRUE) {
+            graphics::arrows(x0 = alphaCI[1], x1 = alphaCI[2],
+                             y0 = max(alphadens)*1.1, length = 0.05, angle = 90,
+                             code = 3)
+        }
         ## effect size
         plot(thetaGrid, thetadens, xlab = bquote("Effect size" ~ theta),
-             ylab = "Marginal posterior density", type = "l", las = 1)
+             ylab = "Marginal posterior density", type = "l", las = 1,
+             ylim = c(0, max(thetadens)*1.1))
+                if (CI == TRUE) {
+            graphics::arrows(x0 = thetaCI[1], x1 = thetaCI[2],
+                             y0 = max(thetadens)*1.1, length = 0.05, angle = 90,
+                             code = 3)
+        }
         graphics::par(mfrow = oldpar$mfrow, mar = oldpar$mar)
     }
 
@@ -778,7 +800,10 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
                 alphaDF = data.frame(alpha = alphaGrid,
                                      density = alphadens),
                 thetaDF = data.frame(theta = thetaGrid,
-                                     density = thetadens))
+                                     density = thetadens),
+                ciCF = data.frame(lower = c(alphaCI[1], thetaCI[1]),
+                                  upper = c(alphaCI[2], thetaCI[2]),
+                                  parameter = c("power parameter", "effect size")))
     invisible(out)
 
 }
