@@ -178,16 +178,16 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
     return(dens)
 }
 
-
-#' @title Marginal posterior density of power parameter
+#' @rdname posterioralpha
+#' @title Marginal posterior distribution of power parameter
 #'
-#' @description This function computes the marginal posterior density of the
-#'     power parameter \eqn{\alpha}{alpha}. A power prior for
-#'     \eqn{\theta}{theta} is constructed by updating an initial normal prior
-#'     \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with
-#'     the likelihood of the original data raised to the power of
-#'     \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
-#'     \mbox{Beta}(\code{x},\code{y})}{alpha ~ Beta(x, y)} is assumed.
+#' @description These functions compute the marginal posterior of the power
+#'     parameter \eqn{\alpha}{alpha}. A power prior for \eqn{\theta}{theta} is
+#'     constructed by updating an initial normal prior \eqn{\theta \sim
+#'     \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with the likelihood of
+#'     the original data raised to the power of \eqn{\alpha}{alpha}. A marginal
+#'     beta prior \eqn{\alpha \sim \mbox{Beta}(\code{x},\code{y})}{alpha ~
+#'     Beta(x, y)} is assumed.
 #'
 #' @param alpha Power parameter. Can be a vector.
 #' @param tr Effect estimate of the replication study.
@@ -202,18 +202,19 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 #'     Defaults to 0.
 #' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
 #'     Defaults to Inf (uniform prior).
-#' @param ... Additional arguments for integration function.
+#' @param ... Additional arguments for stats::integrate.
 #'
-#' @return Marginal posterior density of power parameter
+#' @return \code{postPPalpha} returns the marginal posterior density of the power
+#'     parameter.
 #'
 #' @author Samuel Pawel
 #'
-#' @seealso \code{\link{postPP}}, \code{\link{postPPtheta}}
+#' @seealso \code{\link{postPP}}, \code{\link{postPPtheta}}, \code{\link{plotPP}}
 #'
 #' @examples
 #' alpha <- seq(0, 1, 0.001)
 #' margpostdens <- postPPalpha(alpha = alpha, tr = 0.1, to = 0.2, sr = 0.05, so = 0.05)
-#' plot(alpha, margpostdens, type = "l", xlab = bquote("Power paramter" ~ alpha),
+#' plot(alpha, margpostdens, type = "l", xlab = bquote("Power parameter" ~ alpha),
 #'      ylab = "Marginal posterior density", las = 1)
 #' @export
 postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
@@ -283,10 +284,86 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
     return(margdens)
 }
 
+#' @rdname posterioralpha
+#'
+#' @param level Credibility level of the highest posterior density interval.
+#'     Defaults to 0.95.
+#'
+#' @return \code{postPPalphaHPD} returns the highest marginal posterior density
+#'     interval of the power parameter.
+#' @export
+postPPalphaHPD <- function(level = 0.95, tr, sr, to, so, x = 1, y = 1, m = 0,
+                           v = Inf, ...) {
+    ## input checks
+    stopifnot(
+        length(level) == 1,
+        is.numeric(level),
+        is.finite(level),
+        0 < level, level < 1
+    )
+    ## posterior quantile function
+    quantileFun <- function(q, ...) {
+        if (q == 0) {
+            res <- 0
+        } else if (q == 1) {
+            res <- 1
+        } else {
+            densFun <- function(alpha) {
+                postPPalpha(alpha = alpha, tr = tr, sr = sr, to = to, so = so,
+                            x = x, y = y, m = m, v = v, ... = ...)
+            }
+            rootFun <- function(x) {
+                stats::integrate(f = densFun, lower = 0, upper = x,
+                                 ... = ...)$value - q
+            }
+            res <- stats::uniroot(f = rootFun, interval = c(0, 1))$root
+        }
+        return(res)
+    }
+
+    ## find narrowest interval
+    optFun. <- function(qLow) {
+        width <- quantileFun(q = qLow + level) - quantileFun(q = qLow)
+        return(width)
+    }
+    optFun <- Vectorize(FUN = optFun.)
+    minLower <- stats::optim(par = (1 - level)/2, fn = optFun,
+                             method = "L-BFGS-B", lower = 0, upper = 1 - level)$par
+    CI <- c("lower" = quantileFun(q = minLower),
+            "upper" = quantileFun(q = minLower + level))
+    return(CI)
+}
+
+## ## example
+## tr <- 0.21
+## sr <- 0.05
+## to <- 0.3
+## so <- 0.04
+## x <- 1
+## y <- 1
+## m <- 0
+## v <- Inf
+## ci <- postPPalphaHPD(level = 0.95, tr = tr, sr = sr, to = to, so = so, x = x,
+##                      y = y, m = m, v = v)
+## aseq <- seq(0, 1, 0.001)
+## aFun <- function(a) {
+##     postPPalpha(alpha = a, tr = tr, sr = sr, to = to, so = so, x = x, y = y,
+##                 m = m, v = v)
+## }
+## integrate(aFun, lower = ci[1], upper = ci[2])
+## amax <- optim(par = 0, fn = function(x) -log(aFun(x)),
+##               lower = 0, upper = 1, method = "Brent")$par
+## plot(aseq, aFun(aseq), type = "l", xlab = bquote(alpha), ylab = "Density",
+##      ylim = c(0, aFun(amax)*1.05))
+## arrows(x0 = ci[1], x1 = ci[2], y0 = aFun(amax)*1.05, angle = 90, code = 3, length = 0.05)
+
+
+#' @rdname posteriortheta
+
 #' @title Marginal posterior density of effect size
 #'
-#' @description This function computes the marginal posterior density of the
-#'     effect size \eqn{\theta}{theta}. A power prior for \eqn{\theta}{theta} is
+#' @description These functions compute the marginal posterior of the effect
+#'     size \eqn{\theta}{theta}. A power prior for \eqn{\theta}{theta} is
 #'     constructed by updating an initial normal prior \eqn{\theta \sim
 #'     \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with likelihood of the
 #'     original data raised to the power of \eqn{\alpha}{alpha}. The power
@@ -299,21 +376,26 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 #' @param to Effect estimate of the original study.
 #' @param sr Standard error of the replication effect estimate.
 #' @param so Standard error of the replication effect estimate.
-#' @param x Number of successes parameter for beta prior of power
-#'     parameter \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account
-#'     when \code{alpha = NA}.
-#' @param y Number of failures parameter for beta prior of power
-#'     parameter \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account
-#'     when \code{alpha = NA}.
+#' @param x Number of successes parameter for beta prior of power parameter
+#'     \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account when
+#'     \code{alpha = NA}.
+#' @param y Number of failures parameter for beta prior of power parameter
+#'     \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account when
+#'     \code{alpha = NA}.
 #' @param alpha Power parameter. Can be set to a number between 0 and 1.
-#'     Defaults to \code{NA}.
+#'     Defaults to \code{NA} (a beta prior on the power parameter).
 #' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
 #'     Defaults to 0.
 #' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
 #'     Defaults to Inf (uniform prior).
-#' @param ... Additional arguments for integration function.
+#' @param hypergeo Logical indiacating whether for uniform priors, the marginal
+#'     posterior should be computed with the hypergeometric function. Defaults
+#'     to \code{FALSE} (using numerical integration instead).
+#' @param ... Additional arguments for stats::integrate or hypergeo::genhypergeo
 #'
-#' @return Marginal posterior density of effect size
+#' @return Marginal posterior density of the effect size
+#' @return \code{postPPtheta} returns the marginal posterior density of the
+#'     effect size.
 #'
 #' @author Samuel Pawel
 #'
@@ -326,7 +408,7 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 #'      ylab = "Marginal posterior density", las = 1)
 #' @export
 postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
-                        v = Inf, ...) {
+                        v = Inf, hypergeo = FALSE, ...) {
     ## input checks
     stopifnot(
         1 <= length(theta),
@@ -374,7 +456,11 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
 
         length(v) == 1,
         is.numeric(v),
-        0 < v
+        0 < v,
+
+        length(hypergeo) == 1,
+        is.logical(hypergeo),
+        !is.na(hypergeo)
     )
 
     ## alpha fixed
@@ -401,10 +487,11 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
         ## compute marginal posterior
         ## 1) when flat prior for effect size (v = Inf), can compute using
         ## confluent hypergeometric function
-        if (!is.finite(v)) {
+        if (!is.finite(v) & hypergeo == TRUE) {
             margdens <- stats::dnorm(x = tr, mean = theta, sd = sr) *
                 abs(hypergeo::genhypergeo(U = x + 0.5, L = x + y + 0.5,
-                                          z = -(to - theta)^2/(2*so^2))) *
+                                          z = -(to - theta)^2/(2*so^2),
+                                          ... = ...)) *
                 beta(a = x + 0.5, b = y) / nC / sqrt(2*pi*so^2) /
                 beta(a = x, b = y)
         } else {
@@ -440,6 +527,95 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
     }
     return(margdens)
 }
+
+
+
+#' @rdname posteriortheta
+#'
+#' @param level Credibility level of the highest posterior density interval.
+#'     Defaults to 0.95.
+#' @param thetaRange The numberical search range for the effect size.
+#' @param quantileRange The numerical search range for the lower posterior
+#'     quantile of the HPD interval.
+#'
+#' @return \code{postPPthetaHPD} returns the highest marginal posterior density
+#'     interval of the effect size.
+#' @export
+postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
+                           m = 0, v = Inf,
+                           thetaRange = tr + c(-1, 1)*stats::qnorm(p = (1 + level)/2)*sr*3,
+                           quantileRange = c((1 - level)*0.2, (1 - level)*0.8),
+                           ...) {
+    ## posterior quantile function
+    quantileFun <- function(q, ...) {
+        if (q == 0) {
+            res <- -Inf
+        } else if (q == 1) {
+            res <- Inf
+        } else {
+            densFun <- function(theta) {
+                postPPtheta(theta = theta, tr = tr, sr = sr, to = to, so = so,
+                            x = x, y = y, alpha = alpha, m = m, v = v,
+                            rel.tol = .Machine$double.eps^0.5)
+            }
+            rootFun <- function(x) {
+                stats::integrate(f = densFun, lower = -Inf, upper = x,
+                                 ... = ...)$value - q
+            }
+            res <- stats::uniroot(f = rootFun, interval = thetaRange)$root
+        }
+        return(res)
+    }
+
+    ## find narrowest interval
+    optFun. <- function(qLow) {
+        width <- quantileFun(q = qLow + level) - quantileFun(q = qLow)
+        return(width)
+    }
+    optFun <- Vectorize(FUN = optFun.)
+    minLower <- stats::optim(par = (1 - level)/2, fn = optFun,
+                             method = "L-BFGS-B", lower = quantileRange[1],
+                             upper = quantileRange[2])$par
+    CI <- c("lower" = quantileFun(q = minLower),
+            "upper" = quantileFun(q = minLower + level))
+    return(CI)
+}
+
+## ## example for theta
+## tr <- 0.21
+## sr <- 0.05
+## to <- 0.3
+## so <- 0.04
+## x <- 1
+## y <- 1
+## m <- 0
+## v <- Inf
+## ci <- postPPthetaHPD(level = 0.95, tr = tr, sr = sr, to = to, so = so, x = x,
+##                      y = y, m = m, v = v)
+## tseq <- seq(tr - 5*sr, tr + 5*sr, length.out = 200)
+## tFun <- function(t) {
+##     postPPtheta(theta = t, tr = tr, sr = sr, to = to, so = so, x = x, y = y,
+##                 m = m, v = v,
+##                 rel.tol = .Machine$double.eps^0.75)
+## }
+## integrate(tFun, lower = ci[1], upper = ci[2])
+## tmax <- optim(par = mean(tseq), fn = function(x) -log(tFun(x)),
+##               lower = min(tseq), upper = max(tseq), method = "Brent")$par
+## plot(tseq, tFun(tseq), type = "l", xlab = bquote(theta), ylab = "Density")
+## arrows(x0 = ci[1], x1 = ci[2], y0 = tFun(tmax)*1.01, angle = 90, code = 3, length = 0.05)
+
+
+
+## tr <- 0.1
+## to <- 0.2
+## sr <- so <- 0.05
+## x <- y <- 1
+## theta <- seq(-10, 10, length.out = 5000)
+## margpostdens <- postPPtheta(theta = theta, tr = tr, to = to, sr = sr, so = so,
+##                             hypergeo = FALSE,
+##                             rel.tol = .Machine$double.eps^0.75)
+## plot(theta, margpostdens, type = "l", xlab = bquote("Effect size" ~ theta),
+##      ylab = "Marginal posterior density", las = 1)
 
 
 #' @title Joint and marginal posterior density plots
@@ -560,27 +736,41 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
     thetadens <- postPPtheta(theta = thetaGrid, tr = tr, sr = sr, to = to,
                              so = so, x = x, y = y, m = m, v = v)
 
+    ## compute HPD intervals
+    level <- 0.95
+    aFun <- function(a) {
+        postPPalpha(alpha = a, tr = tr, sr = sr, to = to, so = so, x = x, y = y,
+                    m = m, v = v)
+    }
+    tFun <- function(t) {
+        postPPtheta(theta = t, tr = tr, sr = sr, to = to, so = so, x = x, y = y,
+                    m = m, v = v)
+    }
+
     if (plot) {
-        oldpar <- graphics::par("mfrow")
+        oldpar <- graphics::par("mfrow", "mar")
         graphics::layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE))
+        graphics::par(mar = c(1, oldpar$mar[2:4]))
         ## joint density
         jointdensMat <- matrix(data = jointdens, ncol = nGrid, byrow = TRUE)
         graphics::image(x = thetaGrid, y = alphaGrid, z = jointdensMat,
-                        xlab = bquote("Effect size" ~ theta),
+                        xlab = "",
                         ylab = bquote("Power parameter" ~ alpha),
                         main = bquote(plain("Joint posterior density")),
                         col = grDevices::hcl.colors(n = 100, palette = "Blues 3",
                                                     rev = TRUE),
                         las = 1)
+        graphics::mtext(text = bquote("Effect size" ~ theta), side = 1, line = 2.5, cex = 0.9)
         graphics::contour(x = thetaGrid, y = alphaGrid, z = jointdensMat, add = TRUE,
                           drawlabels = FALSE, nlevels = 5, col = "#00000080")
+        graphics::par(mar = oldpar$mar)
         ## power parameter
         plot(alphaGrid, alphadens, xlab = bquote("Power parameter" ~ alpha),
              ylab = "Marginal posterior density", type = "l", las = 1)
         ## effect size
         plot(thetaGrid, thetadens, xlab = bquote("Effect size" ~ theta),
              ylab = "Marginal posterior density", type = "l", las = 1)
-        graphics::par(mfrow = oldpar)
+        graphics::par(mfrow = oldpar$mfrow, mar = oldpar$mar)
     }
 
     ## return plot data
@@ -592,3 +782,59 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
     invisible(out)
 
 }
+
+## ## generic (retired) function
+## ## function to compute specified quantile based on density function
+## quantileFun <- function(densFun, q, support = c(-Inf, Inf),
+##                         searchInt = c(support[1], support[2]),
+##                         cubature = TRUE, ...) {
+##     if (q == 0) {
+##         res <- support[1]
+##     } else if (q == 1) {
+##         res <- support[2]
+##     } else {
+##         if (cubature == TRUE) {
+##             cubFun <- function(x) matrix(densFun(x), ncol = 1)
+##             rootFun <- function(x) {
+##                 cubature::hcubature(f = cubFun, lowerLimit = support[1],
+##                                     upperLimit = x,
+##                                     vectorInterface = TRUE,
+##                                     ... = ...)$integral - q
+##             }
+##         } else {
+##             rootFun <- function(x) {
+##                 stats::integrate(f = densFun, lower = support[1],
+##                                  upper = x,
+##                                  ... = ...)$value - q
+##             }
+##         }
+##         res <- stats::uniroot(f = rootFun, interval = searchInt)$root
+##     }
+##     return(res)
+## }
+
+
+## ## function to compute highest posterior density interval
+## hpdCI <- function(densFun, level = 0.95, support = c(-Inf, Inf),
+##                   searchInt = c(support[1], support[2]), levelInt = c(0, 1),
+##                   cubature = TRUE) {
+##     ## determine the credible interval with the smallest width
+##     optFun. <- function(alpha) {
+##         width <- quantileFun(densFun = densFun, q = alpha + level,
+##                              support = support, searchInt = searchInt,
+##                              cubature = cubature) -
+##             quantileFun(densFun = densFun, q = alpha, support = support,
+##                         searchInt = searchInt, cubature = cubature)
+
+##         return(width)
+##     }
+##     optFun <- Vectorize(FUN = optFun.)
+##     minLower <- stats::optim(par = (1 - level)/2, fn = optFun,
+##                              method = "L-BFGS-B", lower = levelInt[1],
+##                              upper = levelInt[2] - level)$par
+##     CI <- c(quantileFun(densFun = densFun, q = minLower, support = support,
+##                         searchInt = searchInt, cubature = cubature),
+##             quantileFun(densFun = densFun, q = minLower + level,
+##                         support = support, searchInt = searchInt, cubature = cubature))
+##     return(CI)
+## }

@@ -2,9 +2,12 @@
 % Please edit documentation in R/estimation.R
 \name{postPPalpha}
 \alias{postPPalpha}
-\title{Marginal posterior density of power parameter}
+\alias{postPPalphaHPD}
+\title{Marginal posterior distribution of power parameter}
 \usage{
 postPPalpha(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf, ...)
+
+postPPalphaHPD(level = 0.95, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf, ...)
 }
 \arguments{
 \item{alpha}{Power parameter. Can be a vector.}
@@ -29,28 +32,35 @@ Defaults to 0.}
 \item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
 Defaults to Inf (uniform prior).}
 
-\item{...}{Additional arguments for integration function.}
+\item{...}{Additional arguments for stats::integrate.}
+
+\item{level}{Credibility level of the highest posterior density interval.
+Defaults to 0.95.}
 }
 \value{
-Marginal posterior density of power parameter
+\code{postPPalpha} returns the marginal posterior density of the power
+    parameter.
+
+\code{postPPalphaHPD} returns the highest marginal posterior density
+    interval of the power parameter.
 }
 \description{
-This function computes the marginal posterior density of the
-    power parameter \eqn{\alpha}{alpha}. A power prior for
-    \eqn{\theta}{theta} is constructed by updating an initial normal prior
-    \eqn{\theta \sim \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with
-    the likelihood of the original data raised to the power of
-    \eqn{\alpha}{alpha}. A marginal beta prior \eqn{\alpha \sim
-    \mbox{Beta}(\code{x},\code{y})}{alpha ~ Beta(x, y)} is assumed.
+These functions compute the marginal posterior of the power
+    parameter \eqn{\alpha}{alpha}. A power prior for \eqn{\theta}{theta} is
+    constructed by updating an initial normal prior \eqn{\theta \sim
+    \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with the likelihood of
+    the original data raised to the power of \eqn{\alpha}{alpha}. A marginal
+    beta prior \eqn{\alpha \sim \mbox{Beta}(\code{x},\code{y})}{alpha ~
+    Beta(x, y)} is assumed.
 }
 \examples{
 alpha <- seq(0, 1, 0.001)
 margpostdens <- postPPalpha(alpha = alpha, tr = 0.1, to = 0.2, sr = 0.05, so = 0.05)
-plot(alpha, margpostdens, type = "l", xlab = bquote("Power paramter" ~ alpha),
+plot(alpha, margpostdens, type = "l", xlab = bquote("Power parameter" ~ alpha),
      ylab = "Marginal posterior density", las = 1)
 }
 \seealso{
-\code{\link{postPP}}, \code{\link{postPPtheta}}
+\code{\link{postPP}}, \code{\link{postPPtheta}}, \code{\link{plotPP}}
 }
 \author{
 Samuel Pawel

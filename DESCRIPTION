@@ -1,6 +1,6 @@
 Package: ppRep
 Version: 0.42
-Date: 2023-05-16
+Date: 2023-06-05
 Authors@R:
     person(given = "Samuel",
            family = "Pawel",
@@ -14,7 +14,7 @@ Description: Provides functionality for Bayesian estimation and testing of effec
 License: GPL-3
 Encoding: UTF-8
 Imports: hypergeo
-Suggests: roxygen2, tinytest
+Suggests: roxygen2, tinytest, cubature
 NeedsCompilation: no
 RoxygenNote: 7.2.3
 URL: https://github.com/SamCH93/ppRep

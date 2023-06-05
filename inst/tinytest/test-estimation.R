@@ -1,5 +1,6 @@
 library(tinytest)
 library(ppRep)
+library(cubature)
 
 ## use similar parameters as in paper
 tr <- 0.2
@@ -33,12 +34,16 @@ res2 <- stats::integrate(f = postPPalpha, lower = 0, upper = 1, tr = tr,
 expect_equal(res2$value, 1,
              info = "marginal posterior of alpha integrates to one")
 
-## ## marginal posterior density of theta
-## res3 <- stats::integrate(f = postPPtheta, lower = -Inf, upper = Inf, tr = tr,
-##                          sr = sr, to = to, so = so, x = x, y = y)
-## expect_equal(res3$value, 1,
-##              info = "marginal posterior of theta integrates to one")## ## TODO this doesn't work yet.... some parts where numerical problems
-## ## thetaseq <- seq(-3, 3, length.out = 1000)
-## ## postdens <- postPPtheta(theta = thetaseq, tr = tr, sr = sr, to = to, so = so,
-## ##                         x = x, y = y)
-## ## plot(thetaseq, postdens, type = "l")
+## marginal posterior density of theta
+intFun <- function(theta) {
+    postPPtheta(theta = theta, tr = tr, sr = sr, to = to, so = so, x = x,
+                y = y, rel.tol = .Machine$double.eps^0.75)
+}
+## need to use cubature library because stats::integrate can't handle this integral
+res3 <- hcubature(f = intFun, lowerLimit = -Inf, upperLimit = Inf, tol = 1e-12)$integral
+expect_equal(res3, 1,
+             info = "marginal posterior of theta integrates to one")
+## thetaseq <- seq(-3, 3, length.out = 1000)
+## postdens <- postPPtheta(theta = thetaseq, tr = tr, sr = sr, to = to, so = so,
+##                         x = x, y = y, rel.tol = .Machine$double.eps^0.5)
+## plot(thetaseq, postdens, type = "l")

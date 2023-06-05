@@ -2,6 +2,7 @@
 % Please edit documentation in R/estimation.R
 \name{postPPtheta}
 \alias{postPPtheta}
+\alias{postPPthetaHPD}
 \title{Marginal posterior density of effect size}
 \usage{
 postPPtheta(
@@ -15,6 +16,23 @@ postPPtheta(
   alpha = NA,
   m = 0,
   v = Inf,
+  hypergeo = FALSE,
+  ...
+)
+
+postPPthetaHPD(
+  level,
+  tr,
+  sr,
+  to,
+  so,
+  x = 1,
+  y = 1,
+  alpha = NA,
+  m = 0,
+  v = Inf,
+  thetaRange = tr + c(-1, 1) * stats::qnorm(p = (1 + level)/2) * sr * 3,
+  quantileRange = c((1 - level) * 0.2, (1 - level) * 0.8),
   ...
 )
 }
@@ -29,16 +47,16 @@ postPPtheta(
 
 \item{so}{Standard error of the replication effect estimate.}
 
-\item{x}{Number of successes parameter for beta prior of power
-parameter \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account
-when \code{alpha = NA}.}
+\item{x}{Number of successes parameter for beta prior of power parameter
+\eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account when
+\code{alpha = NA}.}
 
-\item{y}{Number of failures parameter for beta prior of power
-parameter \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account
-when \code{alpha = NA}.}
+\item{y}{Number of failures parameter for beta prior of power parameter
+\eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account when
+\code{alpha = NA}.}
 
 \item{alpha}{Power parameter. Can be set to a number between 0 and 1.
-Defaults to \code{NA}.}
+Defaults to \code{NA} (a beta prior on the power parameter).}
 
 \item{m}{Mean parameter of initial normal prior for \eqn{\theta}{theta}.
 Defaults to 0.}
@@ -46,14 +64,32 @@ Defaults to 0.}
 \item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
 Defaults to Inf (uniform prior).}
 
-\item{...}{Additional arguments for integration function.}
+\item{hypergeo}{Logical indiacating whether for uniform priors, the marginal
+posterior should be computed with the hypergeometric function. Defaults
+to \code{FALSE} (using numerical integration instead).}
+
+\item{...}{Additional arguments for stats::integrate or hypergeo::genhypergeo}
+
+\item{level}{Credibility level of the highest posterior density interval.
+Defaults to 0.95.}
+
+\item{thetaRange}{The numberical search range for the effect size.}
+
+\item{quantileRange}{The numerical search range for the lower posterior
+quantile of the HPD interval.}
 }
 \value{
-Marginal posterior density of effect size
+Marginal posterior density of the effect size
+
+\code{postPPtheta} returns the marginal posterior density of the
+    effect size.
+
+\code{postPPthetaHPD} returns the highest marginal posterior density
+    interval of the effect size.
 }
 \description{
-This function computes the marginal posterior density of the
-    effect size \eqn{\theta}{theta}. A power prior for \eqn{\theta}{theta} is
+These functions compute the marginal posterior of the effect
+    size \eqn{\theta}{theta}. A power prior for \eqn{\theta}{theta} is
     constructed by updating an initial normal prior \eqn{\theta \sim
     \mathrm{N}(\code{m}, \code{v})}{theta ~ N(m, v)} with likelihood of the
     original data raised to the power of \eqn{\alpha}{alpha}. The power
