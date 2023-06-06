@@ -17,14 +17,14 @@ bfPPalpha(tr, sr, to, so, y = 2, uv = NA, ...)
 
 \item{y}{Number of failures parameter for beta prior of power parameter under
 \eqn{H_0}{H0}. Has to be larger than 1 so that density is monotonically
-decreasing. Defaults to 2 (a linearly decreasing prior with zero density
-at 1). Is only taken into account when \code{uv = NA}.}
+decreasing. Defaults to \code{2} (a linearly decreasing prior with zero
+density at 1). Is only taken into account when \code{uv = NA}.}
 
 \item{uv}{Variance of the unit-information prior for the effect size that is
 used for testing the simple hypothesis \eqn{H_0 \colon \alpha = 0}{H0:
 alpha = 0}. Defaults to \code{NA}.}
 
-\item{...}{Additional arguments for integration function.}
+\item{...}{Additional arguments passed to \code{stats::integrate}.}
 }
 \value{
 Bayes factor (BF > 1 indicates evidence for \eqn{H_0}{H0}, whereas BF
@@ -39,17 +39,17 @@ This function computes the Bayes factor contrasting
     prior for the effect size \eqn{\theta}{theta} (e.g., for \eqn{\alpha =
     0}{alpha = 0} the original data are completely discounted). Under
     \eqn{H_0}{H0}, the power parameter can either be fixed to 0, or it can
-    have a Beta distribution \eqn{\alpha | H_0 \sim \mbox{Beta}(1,
+    have a beta distribution \eqn{\alpha | H_0 \sim \mbox{Beta}(1,
     \code{y})}{alpha|H0 ~ Beta(1, \code{y})}. For the fixed power parameter
     case, the specification of an unit-information prior \eqn{\theta \sim
-    \mathrm{N}(0, \mbox{uv})}{theta ~ N(0, uv)} for the effect size
+    \mathrm{N}(0, \code{uv})}{theta ~ N(0, uv)} for the effect size
     \eqn{\theta}{theta} is required as the prior is otherwise not proper.
 }
 \examples{
 ## use unit variance of 2
 bfPPalpha(tr = 0.09,  sr = 0.0518, to = 0.205, so = 0.0506, uv = 2)
 
-## use Beta prior alpha|H1 ~ Be(1, y = 2)
+## use beta prior alpha|H1 ~ Be(1, y = 2)
 bfPPalpha(tr = 0.09,  sr = 0.0518, to = 0.205, so = 0.0506, y = 2)
 }
 \seealso{

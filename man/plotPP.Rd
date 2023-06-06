@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimation.R
 \name{plotPP}
 \alias{plotPP}
-\title{Joint and marginal posterior density plots}
+\title{Joint and marginal posterior distributions}
 \usage{
 plotPP(
   tr,
@@ -17,6 +17,7 @@ plotPP(
   alphaRange = c(0, 1),
   nGrid = 100,
   plot = TRUE,
+  CI = FALSE,
   ...
 )
 }
@@ -30,16 +31,16 @@ plotPP(
 \item{so}{Standard error of the replication effect estimate.}
 
 \item{x}{Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
-Defaults to 1.}
+Defaults to \code{1}.}
 
 \item{y}{Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
-Defaults to 1.}
+Defaults to \code{1}.}
 
 \item{m}{Mean parameter of initial normal prior for \eqn{\theta}{theta}.
-Defaults to 0.}
+Defaults to \code{0}.}
 
 \item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
-Defaults to Inf (uniform prior).}
+Defaults to \code{Inf} (uniform prior).}
 
 \item{thetaRange}{Range of effect sizes. Defaults to three standard errors
 around the replication effect estimate.}
@@ -47,16 +48,20 @@ around the replication effect estimate.}
 \item{alphaRange}{Range of power parameters. Defaults to the range between
 zero and one.}
 
-\item{nGrid}{Number of grid points. Defaults to 100.}
+\item{nGrid}{Number of grid points. Defaults to \code{100}.}
 
 \item{plot}{Logical indicating whether data should be plotted. If
 \code{FALSE} only the data used for plotting are returned.}
 
-\item{...}{Additional arguments passed to \code{plot} function.}
+\item{CI}{Logical indicating whether 95\% highest posterior credible intervals
+should be plotted. Defaults to \code{FALSE} because computing them takes
+some time.}
+
+\item{...}{Additional arguments passed to \code{plot}.}
 }
 \value{
-Plots joint and marginal posterior densities, invisibly returns the
-    data for the plots.
+Plots joint and marginal posterior densities, invisibly returns a
+    list with the data for the plots.
 }
 \description{
 This convenience function computes and, if desired, visualizes

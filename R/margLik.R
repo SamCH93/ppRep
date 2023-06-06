@@ -17,14 +17,14 @@
 #' @param sr Standard error of the replication effect estimate.
 #' @param so Standard error of the replication effect estimate.
 #' @param x Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
-#'     Defaults to 1.
+#'     Defaults to \code{1}.
 #' @param y Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
-#'     Defaults to 1.
+#'     Defaults to \code{1}.
 #' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to 0.
+#'     Defaults to \code{0}.
 #' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to Inf (uniform prior).
-#' @param ... Additional arguments for integration function
+#'     Defaults to \code{Inf} (uniform prior).
+#' @param ... Additional arguments passed to \code{stats::integrate}.
 #'
 #' @return Marginal likelihood
 #'

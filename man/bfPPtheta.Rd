@@ -16,17 +16,17 @@ bfPPtheta(tr, sr, to, so, x = 1, y = 1, alpha = NA, ...)
 \item{so}{Standard error of the replication effect estimate.}
 
 \item{x}{Number of successes parameter for beta prior of power parameter
-under \eqn{H_1}{H1}. Defaults to 1. Is only taken into account when
+under \eqn{H_1}{H1}. Defaults to \code{1}. Is only taken into account when
 \code{alpha = NA}.}
 
 \item{y}{Number of failures parameter for beta prior of power parameter under
-\eqn{H_1}{H1}. Defaults to 1. Is only taken into account when \code{alpha
+\eqn{H_1}{H1}. Defaults to \code{1}. Is only taken into account when \code{alpha
 = NA}.}
 
 \item{alpha}{Power parameter under \eqn{H_1}{H1}. Can be set to a number
 between 0 and 1. Defaults to \code{NA}.}
 
-\item{...}{Additional arguments for integration function.}
+\item{...}{Additional arguments passed to \code{stats::integrate}.}
 }
 \value{
 Bayes factor (BF > 1 indicates evidence for \eqn{H_0}{H0}, whereas BF
@@ -41,7 +41,7 @@ This function computes the Bayes factor contrasting
     posterior of the effect size obtained from combining a normal likelihood
     of the original data raised to the power of \eqn{\alpha}{alpha} with a
     flat initial prior with a. Under \eqn{H_1}{H1}, the power parameter can
-    either be fixed to some value between 0 and 1, or it can have a Beta
+    either be fixed to some value between 0 and 1, or it can have a beta
     distribution \eqn{\alpha | H_1 \sim \mbox{Beta}(\code{x},
     \code{y})}{alpha|H1 ~ Beta(\code{x}, \code{y})}.
 }

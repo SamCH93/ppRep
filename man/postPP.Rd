@@ -22,18 +22,18 @@ postPP(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf, ...)
 \item{so}{Standard error of the replication effect estimate.}
 
 \item{x}{Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
-Defaults to 1.}
+Defaults to \code{1}.}
 
 \item{y}{Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
-Defaults to 1.}
+Defaults to \code{1}.}
 
 \item{m}{Mean parameter of initial normal prior for \eqn{\theta}{theta}.
-Defaults to 0.}
+Defaults to \code{0}.}
 
 \item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
-Defaults to Inf (uniform prior).}
+Defaults to \code{Inf} (uniform prior).}
 
-\item{...}{Additional arguments for integration function.}
+\item{...}{Additional arguments passed to \code{stats::integrate}.}
 }
 \value{
 Posterior density
@@ -61,7 +61,7 @@ filled.contour(x = theta, y = alpha, z = postdensMat,
                color.palette = function(n) hcl.colors(n = n, palette = "viridis"))
 }
 \seealso{
-\code{\link{postPPalpha}}, \code{\link{postPPtheta}}
+\code{\link{postPPalpha}}, \code{\link{postPPtheta}}, \code{\link{plotPP}}
 }
 \author{
 Samuel Pawel

@@ -8,7 +8,7 @@
 #'     posterior of the effect size obtained from combining a normal likelihood
 #'     of the original data raised to the power of \eqn{\alpha}{alpha} with a
 #'     flat initial prior with a. Under \eqn{H_1}{H1}, the power parameter can
-#'     either be fixed to some value between 0 and 1, or it can have a Beta
+#'     either be fixed to some value between 0 and 1, or it can have a beta
 #'     distribution \eqn{\alpha | H_1 \sim \mbox{Beta}(\code{x},
 #'     \code{y})}{alpha|H1 ~ Beta(\code{x}, \code{y})}.
 #'
@@ -18,14 +18,14 @@
 #' @param sr Standard error of the replication effect estimate.
 #' @param so Standard error of the replication effect estimate.
 #' @param x Number of successes parameter for beta prior of power parameter
-#'     under \eqn{H_1}{H1}. Defaults to 1. Is only taken into account when
+#'     under \eqn{H_1}{H1}. Defaults to \code{1}. Is only taken into account when
 #'     \code{alpha = NA}.
 #' @param y Number of failures parameter for beta prior of power parameter under
-#'     \eqn{H_1}{H1}. Defaults to 1. Is only taken into account when \code{alpha
+#'     \eqn{H_1}{H1}. Defaults to \code{1}. Is only taken into account when \code{alpha
 #'     = NA}.
 #' @param alpha Power parameter under \eqn{H_1}{H1}. Can be set to a number
 #'     between 0 and 1. Defaults to \code{NA}.
-#' @param ... Additional arguments for integration function.
+#' @param ... Additional arguments passed to \code{stats::integrate}.
 #'
 #' @return Bayes factor (BF > 1 indicates evidence for \eqn{H_0}{H0}, whereas BF
 #'     < 1 indicates evidence for \eqn{H_1}{H1})
@@ -107,10 +107,10 @@ bfPPtheta <- function(tr, sr, to, so, x = 1, y = 1, alpha = NA, ...) {
 #'     prior for the effect size \eqn{\theta}{theta} (e.g., for \eqn{\alpha =
 #'     0}{alpha = 0} the original data are completely discounted). Under
 #'     \eqn{H_0}{H0}, the power parameter can either be fixed to 0, or it can
-#'     have a Beta distribution \eqn{\alpha | H_0 \sim \mbox{Beta}(1,
+#'     have a beta distribution \eqn{\alpha | H_0 \sim \mbox{Beta}(1,
 #'     \code{y})}{alpha|H0 ~ Beta(1, \code{y})}. For the fixed power parameter
 #'     case, the specification of an unit-information prior \eqn{\theta \sim
-#'     \mathrm{N}(0, \mbox{uv})}{theta ~ N(0, uv)} for the effect size
+#'     \mathrm{N}(0, \code{uv})}{theta ~ N(0, uv)} for the effect size
 #'     \eqn{\theta}{theta} is required as the prior is otherwise not proper.
 #'
 #' @param tr Effect estimate of the replication study.
@@ -119,12 +119,12 @@ bfPPtheta <- function(tr, sr, to, so, x = 1, y = 1, alpha = NA, ...) {
 #' @param so Standard error of the replication effect estimate.
 #' @param y Number of failures parameter for beta prior of power parameter under
 #'     \eqn{H_0}{H0}. Has to be larger than 1 so that density is monotonically
-#'     decreasing. Defaults to 2 (a linearly decreasing prior with zero density
-#'     at 1). Is only taken into account when \code{uv = NA}.
+#'     decreasing. Defaults to \code{2} (a linearly decreasing prior with zero
+#'     density at 1). Is only taken into account when \code{uv = NA}.
 #' @param uv Variance of the unit-information prior for the effect size that is
 #'     used for testing the simple hypothesis \eqn{H_0 \colon \alpha = 0}{H0:
 #'     alpha = 0}. Defaults to \code{NA}.
-#' @param ... Additional arguments for integration function.
+#' @param ... Additional arguments passed to \code{stats::integrate}.
 #'
 #' @return Bayes factor (BF > 1 indicates evidence for \eqn{H_0}{H0}, whereas BF
 #'     < 1 indicates evidence for \eqn{H_1}{H1})
@@ -137,7 +137,7 @@ bfPPtheta <- function(tr, sr, to, so, x = 1, y = 1, alpha = NA, ...) {
 #' ## use unit variance of 2
 #' bfPPalpha(tr = 0.09,  sr = 0.0518, to = 0.205, so = 0.0506, uv = 2)
 #'
-#' ## use Beta prior alpha|H1 ~ Be(1, y = 2)
+#' ## use beta prior alpha|H1 ~ Be(1, y = 2)
 #' bfPPalpha(tr = 0.09,  sr = 0.0518, to = 0.205, so = 0.0506, y = 2)
 #' @export
 bfPPalpha <- function(tr, sr, to, so, y = 2, uv = NA, ...) {

@@ -3,10 +3,10 @@
 #'     conditional on a fixed power parameter and an initial normal prior for
 #'     the effect size.
 #' @param vardata Variance of the data.
-#' @param priorvar Variance parameter of initial normal prior. Defaults to Inf
-#'     (uniform prior).
+#' @param priorvar Variance parameter of initial normal prior. Defaults to
+#'     \code{Inf} (uniform prior).
 #' @param alpha Power parameter. Indicates to which power the likelihood of the
-#'     data is raised. Can be set to a number in [0, 1]. Defaults to 1.
+#'     data is raised. Can be set to a number in [0, 1]. Defaults to \code{1}.
 #'
 #' @return Prior variance
 #'
@@ -30,11 +30,12 @@ postNormVar <- function(vardata, priorvar, alpha = 1) {
 #'     the effect size.
 #' @param dat Data.
 #' @param vardata Variance of the data.
-#' @param priormean Mean parameter of initial normal prior. Defaults to 0.
-#' @param priorvar Variance parameter of initial normal prior. Defaults to Inf
-#'     (uniform prior).
+#' @param priormean Mean parameter of initial normal prior. Defaults to
+#'     \code{0}.
+#' @param priorvar Variance parameter of initial normal prior. Defaults to
+#'     \code{Inf} (uniform prior).
 #' @param alpha Power parameter. Indicates to which power the likelihood of the
-#'     data is raised. Can be set to a number in [0, 1]. Defaults to 1.
+#'     data is raised. Can be set to a number in [0, 1]. Defaults to \code{1}.
 #'
 #' @return Prior mean
 #'
@@ -75,20 +76,20 @@ postNormMean <- function(dat, vardata, priormean, priorvar, alpha = 1) {
 #' @param sr Standard error of the replication effect estimate.
 #' @param so Standard error of the replication effect estimate.
 #' @param x Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
-#'     Defaults to 1.
+#'     Defaults to \code{1}.
 #' @param y Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
-#'     Defaults to 1.
+#'     Defaults to \code{1}.
 #' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to 0.
+#'     Defaults to \code{0}.
 #' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to Inf (uniform prior).
-#' @param ... Additional arguments for integration function.
+#'     Defaults to \code{Inf} (uniform prior).
+#' @param ... Additional arguments passed to \code{stats::integrate}.
 #'
 #' @return Posterior density
 #'
 #' @author Samuel Pawel
 #'
-#' @seealso \code{\link{postPPalpha}}, \code{\link{postPPtheta}}
+#' @seealso \code{\link{postPPalpha}}, \code{\link{postPPtheta}}, \code{\link{plotPP}}
 #'
 #' @examples
 #' alpha <- seq(0, 1, length.out = 200)
@@ -195,14 +196,14 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 #' @param sr Standard error of the replication effect estimate.
 #' @param so Standard error of the replication effect estimate.
 #' @param x Number of successes parameter of beta prior \eqn{\alpha}{alpha}.
-#'     Defaults to 1.
+#'     Defaults to \code{1}.
 #' @param y Number of failures parameter of beta prior \eqn{\alpha}{alpha}.
-#'     Defaults to 1.
+#'     Defaults to \code{1}.
 #' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to 0.
+#'     Defaults to \code{0}.
 #' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to Inf (uniform prior).
-#' @param ... Additional arguments for stats::integrate.
+#'     Defaults to \code{Inf} (uniform prior).
+#' @param ... Additional arguments passed to \code{stats::integrate}.
 #'
 #' @return \code{postPPalpha} returns the marginal posterior density of the power
 #'     parameter.
@@ -287,7 +288,7 @@ postPPalpha <- function(alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 #' @rdname posterioralpha
 #'
 #' @param level Credibility level of the highest posterior density interval.
-#'     Defaults to 0.95.
+#'     Defaults to \code{0.95}.
 #'
 #' @return \code{postPPalphaHPD} returns the highest marginal posterior density
 #'     interval of the power parameter.
@@ -327,10 +328,15 @@ postPPalphaHPD <- function(level = 0.95, tr, sr, to, so, x = 1, y = 1, m = 0,
         return(width)
     }
     optFun <- Vectorize(FUN = optFun.)
-    minLower <- stats::optim(par = (1 - level)/2, fn = optFun,
-                             method = "L-BFGS-B", lower = 0, upper = 1 - level)$par
-    CI <- c("lower" = quantileFun(q = minLower),
-            "upper" = quantileFun(q = minLower + level))
+    minLower <- try(stats::optim(par = (1 - level)/2, fn = optFun,
+                                 method = "L-BFGS-B", lower = 0,
+                                 upper = 1 - level)$par)
+    if (inherits(minLower, "try-error")) {
+        CI <- c("lower" = NaN, "upper" = NaN)
+    } else {
+        CI <- c("lower" = quantileFun(q = minLower),
+                "upper" = quantileFun(q = minLower + level))
+    }
     return(CI)
 }
 
@@ -360,7 +366,7 @@ postPPalphaHPD <- function(level = 0.95, tr, sr, to, so, x = 1, y = 1, m = 0,
 
 #' @rdname posteriortheta
 
-#' @title Marginal posterior density of effect size
+#' @title Marginal posterior distribution of effect size
 #'
 #' @description These functions compute the marginal posterior of the effect
 #'     size \eqn{\theta}{theta}. A power prior for \eqn{\theta}{theta} is
@@ -377,29 +383,29 @@ postPPalphaHPD <- function(level = 0.95, tr, sr, to, so, x = 1, y = 1, m = 0,
 #' @param sr Standard error of the replication effect estimate.
 #' @param so Standard error of the replication effect estimate.
 #' @param x Number of successes parameter for beta prior of power parameter
-#'     \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account when
-#'     \code{alpha = NA}.
+#'     \eqn{\alpha}{alpha}. Defaults to \code{1}. Is only taken into account
+#'     when \code{alpha = NA}.
 #' @param y Number of failures parameter for beta prior of power parameter
-#'     \eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account when
-#'     \code{alpha = NA}.
+#'     \eqn{\alpha}{alpha}. Defaults to \code{1}. Is only taken into account
+#'     when \code{alpha = NA}.
 #' @param alpha Power parameter. Can be set to a number between 0 and 1.
 #'     Defaults to \code{NA} (a beta prior on the power parameter).
 #' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to 0.
+#'     Defaults to \code{0}.
 #' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to Inf (uniform prior).
-#' @param hypergeo Logical indiacating whether for uniform priors, the marginal
+#'     Defaults to \code{Inf} (uniform prior).
+#' @param hypergeo Logical indicating whether for uniform priors, the marginal
 #'     posterior should be computed with the hypergeometric function. Defaults
 #'     to \code{FALSE} (using numerical integration instead).
-#' @param ... Additional arguments for stats::integrate or hypergeo::genhypergeo
+#' @param ... Additional arguments passed to \code{stats::integrate} or
+#'     \code{hypergeo::genhypergeo} (depending on the \code{hypergeo} argument).
 #'
-#' @return Marginal posterior density of the effect size
 #' @return \code{postPPtheta} returns the marginal posterior density of the
 #'     effect size.
 #'
 #' @author Samuel Pawel
 #'
-#' @seealso \code{\link{postPP}}, \code{\link{postPPalpha}}
+#' @seealso \code{\link{postPP}}, \code{\link{postPPalpha}}, \code{\link{plotPP}}
 #'
 #' @examples
 #' theta <- seq(0, 0.6, 0.001)
@@ -533,19 +539,45 @@ postPPtheta <- function(theta, tr, sr, to, so, x = 1, y = 1, alpha = NA, m = 0,
 #' @rdname posteriortheta
 #'
 #' @param level Credibility level of the highest posterior density interval.
-#'     Defaults to 0.95.
-#' @param thetaRange The numberical search range for the effect size.
+#'     Defaults to \code{0.95}.
+#' @param thetaRange The numerical search range for the effect size. Defaults to
+#'     the \code{level*100}\% confidence inteval range inflated by a factor of
+#'     three. We recommend changing this argument only if there are numerical
+#'     problems in calculating the HPD interval.
 #' @param quantileRange The numerical search range for the lower posterior
-#'     quantile of the HPD interval.
+#'     quantile of the HPD interval. Defaults to the range between \code{(1 -
+#'     level)*0.2} and \code{(1 - level)*0.8}. We recommend changing this
+#'     argument only if there are numerical problems in calculating the HPD
+#'     interval.
 #'
 #' @return \code{postPPthetaHPD} returns the highest marginal posterior density
-#'     interval of the effect size.
+#'     interval of the effect size (this may take a while).
 #' @export
 postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
                            m = 0, v = Inf,
                            thetaRange = tr + c(-1, 1)*stats::qnorm(p = (1 + level)/2)*sr*3,
                            quantileRange = c((1 - level)*0.2, (1 - level)*0.8),
                            ...) {
+    ## input checks
+    stopifnot(
+        length(level) == 1,
+        is.numeric(level),
+        is.finite(level),
+        0 < level, level < 1,
+
+        length(thetaRange) == 2,
+        all(is.numeric(thetaRange)),
+        all(is.finite(thetaRange)),
+        thetaRange[1] < thetaRange[2],
+
+        length(quantileRange) == 2,
+        all(is.numeric(quantileRange)),
+        all(is.finite(quantileRange)),
+        all(quantileRange <= 1 - level),
+        all(quantileRange >= 0),
+        quantileRange[1] < quantileRange[2]
+
+    )
     ## posterior quantile function
     quantileFun <- function(q, ...) {
         if (q == 0) {
@@ -573,11 +605,15 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
         return(width)
     }
     optFun <- Vectorize(FUN = optFun.)
-    minLower <- stats::optim(par = (1 - level)/2, fn = optFun,
-                             method = "L-BFGS-B", lower = quantileRange[1],
-                             upper = quantileRange[2])$par
-    CI <- c("lower" = quantileFun(q = minLower),
-            "upper" = quantileFun(q = minLower + level))
+    minLower <- try(stats::optim(par = (1 - level)/2, fn = optFun,
+                                 method = "L-BFGS-B", lower = quantileRange[1],
+                                 upper = quantileRange[2])$par)
+    if (inherits(minLower, "try-error")) {
+        CI <- c("lower" = NaN, "upper" = NaN)
+    } else {
+        CI <- c("lower" = quantileFun(q = minLower),
+                "upper" = quantileFun(q = minLower + level))
+    }
     return(CI)
 }
 
@@ -618,7 +654,7 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
 ##      ylab = "Marginal posterior density", las = 1)
 
 
-#' @title Joint and marginal posterior density plots
+#' @title Joint and marginal posterior distributions
 #'
 #' @description This convenience function computes and, if desired, visualizes
 #'     the joint posterior density of effect size \eqn{\theta}{theta} and power
@@ -633,27 +669,27 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
 #' @param sr Standard error of the replication effect estimate.
 #' @param so Standard error of the replication effect estimate.
 #' @param x Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
-#'     Defaults to 1.
+#'     Defaults to \code{1}.
 #' @param y Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
-#'     Defaults to 1.
+#'     Defaults to \code{1}.
 #' @param m Mean parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to 0.
+#'     Defaults to \code{0}.
 #' @param v Variance parameter of initial normal prior for \eqn{\theta}{theta}.
-#'     Defaults to Inf (uniform prior).
+#'     Defaults to \code{Inf} (uniform prior).
 #' @param thetaRange Range of effect sizes. Defaults to three standard errors
 #'     around the replication effect estimate.
 #' @param alphaRange Range of power parameters. Defaults to the range between
 #'     zero and one.
-#' @param nGrid Number of grid points. Defaults to 100.
+#' @param nGrid Number of grid points. Defaults to \code{100}.
 #' @param plot Logical indicating whether data should be plotted. If
 #'     \code{FALSE} only the data used for plotting are returned.
-#' @param CI Logical indicating whether 95% highest posterior credible intervals
+#' @param CI Logical indicating whether 95\% highest posterior credible intervals
 #'     should be plotted. Defaults to \code{FALSE} because computing them takes
 #'     some time.
-#' @param ... Additional arguments passed to \code{plot} function.
+#' @param ... Additional arguments passed to \code{plot}.
 #'
-#' @return Plots joint and marginal posterior densities, invisibly returns the
-#'     data for the plots.
+#' @return Plots joint and marginal posterior densities, invisibly returns a
+#'     list with the data for the plots.
 #'
 #' @author Samuel Pawel
 #'

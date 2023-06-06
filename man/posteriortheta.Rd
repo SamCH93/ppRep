@@ -3,7 +3,7 @@
 \name{postPPtheta}
 \alias{postPPtheta}
 \alias{postPPthetaHPD}
-\title{Marginal posterior density of effect size}
+\title{Marginal posterior distribution of effect size}
 \usage{
 postPPtheta(
   theta,
@@ -48,44 +48,49 @@ postPPthetaHPD(
 \item{so}{Standard error of the replication effect estimate.}
 
 \item{x}{Number of successes parameter for beta prior of power parameter
-\eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account when
-\code{alpha = NA}.}
+\eqn{\alpha}{alpha}. Defaults to \code{1}. Is only taken into account
+when \code{alpha = NA}.}
 
 \item{y}{Number of failures parameter for beta prior of power parameter
-\eqn{\alpha}{alpha}. Defaults to 1. Is only taken into account when
-\code{alpha = NA}.}
+\eqn{\alpha}{alpha}. Defaults to \code{1}. Is only taken into account
+when \code{alpha = NA}.}
 
 \item{alpha}{Power parameter. Can be set to a number between 0 and 1.
 Defaults to \code{NA} (a beta prior on the power parameter).}
 
 \item{m}{Mean parameter of initial normal prior for \eqn{\theta}{theta}.
-Defaults to 0.}
+Defaults to \code{0}.}
 
 \item{v}{Variance parameter of initial normal prior for \eqn{\theta}{theta}.
-Defaults to Inf (uniform prior).}
+Defaults to \code{Inf} (uniform prior).}
 
-\item{hypergeo}{Logical indiacating whether for uniform priors, the marginal
+\item{hypergeo}{Logical indicating whether for uniform priors, the marginal
 posterior should be computed with the hypergeometric function. Defaults
 to \code{FALSE} (using numerical integration instead).}
 
-\item{...}{Additional arguments for stats::integrate or hypergeo::genhypergeo}
+\item{...}{Additional arguments passed to \code{stats::integrate} or
+\code{hypergeo::genhypergeo} (depending on the \code{hypergeo} argument).}
 
 \item{level}{Credibility level of the highest posterior density interval.
-Defaults to 0.95.}
+Defaults to \code{0.95}.}
 
-\item{thetaRange}{The numberical search range for the effect size.}
+\item{thetaRange}{The numerical search range for the effect size. Defaults to
+the \code{level*100}\% confidence inteval range inflated by a factor of
+three. We recommend changing this argument only if there are numerical
+problems in calculating the HPD interval.}
 
 \item{quantileRange}{The numerical search range for the lower posterior
-quantile of the HPD interval.}
+quantile of the HPD interval. Defaults to the range between \code{(1 -
+level)*0.2} and \code{(1 - level)*0.8}. We recommend changing this
+argument only if there are numerical problems in calculating the HPD
+interval.}
 }
 \value{
-Marginal posterior density of the effect size
-
 \code{postPPtheta} returns the marginal posterior density of the
     effect size.
 
 \code{postPPthetaHPD} returns the highest marginal posterior density
-    interval of the effect size.
+    interval of the effect size (this may take a while).
 }
 \description{
 These functions compute the marginal posterior of the effect
@@ -104,7 +109,7 @@ plot(theta, margpostdens, type = "l", xlab = bquote("Effect size" ~ theta),
      ylab = "Marginal posterior density", las = 1)
 }
 \seealso{
-\code{\link{postPP}}, \code{\link{postPPalpha}}
+\code{\link{postPP}}, \code{\link{postPPalpha}}, \code{\link{plotPP}}
 }
 \author{
 Samuel Pawel

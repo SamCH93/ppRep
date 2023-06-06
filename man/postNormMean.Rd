@@ -11,13 +11,14 @@ postNormMean(dat, vardata, priormean, priorvar, alpha = 1)
 
 \item{vardata}{Variance of the data.}
 
-\item{priormean}{Mean parameter of initial normal prior. Defaults to 0.}
+\item{priormean}{Mean parameter of initial normal prior. Defaults to
+\code{0}.}
 
-\item{priorvar}{Variance parameter of initial normal prior. Defaults to Inf
-(uniform prior).}
+\item{priorvar}{Variance parameter of initial normal prior. Defaults to
+\code{Inf} (uniform prior).}
 
 \item{alpha}{Power parameter. Indicates to which power the likelihood of the
-data is raised. Can be set to a number in [0, 1]. Defaults to 1.}
+data is raised. Can be set to a number in [0, 1]. Defaults to \code{1}.}
 }
 \value{
 Prior mean
