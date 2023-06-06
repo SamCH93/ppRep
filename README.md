@@ -25,8 +25,9 @@ so <- 0.05 # original standard error
 tr <- 0.1 # replication effect estimate
 sr <- 0.05 # replication standard error
 
-## compute and plot posterior density
-plotPP(tr = tr, sr = sr, to = to, so = so)
+## compute and plot posterior density with 95% HPD credible intervals
+plotPP(tr = tr, sr = sr, to = to, so = so, CI = TRUE)
 ```
 ![Plot of joint posterior distribution of power parameter and effect size.](posterior.png)
 
+<!-- png(filename = "posterior.png", width = 1.5*800, height = 1.5*600, pointsize = 25); plotPP(tr = tr, sr = sr, to = to, so = so, CI = TRUE, ngrid = 1000); dev.off() -->
