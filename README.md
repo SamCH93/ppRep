@@ -19,10 +19,10 @@ remotes::install_github(repo = "SamCH93/ppRep")
 ``` r
 library("ppRep")
 
-## data from Protzko et al. (2020)
-to <- 0.2 # original effect estimate
+## data from one replication of "Labels" experiment in Protzko et al. (2020)
+to <- 0.2 # original SMD effect estimate
 so <- 0.05 # original standard error
-tr <- 0.1 # replication effect estimate
+tr <- 0.09 # replication SMD effect estimate
 sr <- 0.05 # replication standard error
 
 ## compute and plot posterior density with 95% HPD credible intervals
