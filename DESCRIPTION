@@ -1,5 +1,5 @@
 Package: ppRep
-Version: 0.42
+Version: 0.42.1
 Date: 2023-06-16
 Authors@R:
     person(given = "Samuel",

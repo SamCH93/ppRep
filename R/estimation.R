@@ -792,7 +792,8 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 
     ## plot posterior distributions
     if (plot) {
-        oldpar <- graphics::par("mfrow", "mar")
+        oldpar <- graphics::par(no.readonly = TRUE)
+        on.exit(graphics::par(oldpar))
         graphics::layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE))
         graphics::par(mar = c(1, oldpar$mar[2:4]))
         ## joint distribution
@@ -826,7 +827,6 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
                              y0 = max(thetadens)*1.1, length = 0.05, angle = 90,
                              code = 3)
         }
-        graphics::par(mfrow = oldpar$mfrow, mar = oldpar$mar)
     }
 
     ## return plot data
