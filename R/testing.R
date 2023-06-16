@@ -10,7 +10,7 @@
 #'     flat initial prior with a. Under \eqn{H_1}{H1}, the power parameter can
 #'     either be fixed to some value between 0 and 1, or it can have a beta
 #'     distribution \eqn{\alpha | H_1 \sim \mbox{Beta}(\code{x},
-#'     \code{y})}{alpha|H1 ~ Beta(\code{x}, \code{y})}.
+#'     \code{y})}{alpha|H1 ~ Beta(x, y)}.
 #'
 #'
 #' @param tr Effect estimate of the replication study.
@@ -108,7 +108,7 @@ bfPPtheta <- function(tr, sr, to, so, x = 1, y = 1, alpha = NA, ...) {
 #'     0}{alpha = 0} the original data are completely discounted). Under
 #'     \eqn{H_0}{H0}, the power parameter can either be fixed to 0, or it can
 #'     have a beta distribution \eqn{\alpha | H_0 \sim \mbox{Beta}(1,
-#'     \code{y})}{alpha|H0 ~ Beta(1, \code{y})}. For the fixed power parameter
+#'     \code{y})}{alpha|H0 ~ Beta(1, y)}. For the fixed power parameter
 #'     case, the specification of an unit-information prior \eqn{\theta \sim
 #'     \mathrm{N}(0, \code{uv})}{theta ~ N(0, uv)} for the effect size
 #'     \eqn{\theta}{theta} is required as the prior is otherwise not proper.

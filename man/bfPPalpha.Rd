@@ -40,7 +40,7 @@ This function computes the Bayes factor contrasting
     0}{alpha = 0} the original data are completely discounted). Under
     \eqn{H_0}{H0}, the power parameter can either be fixed to 0, or it can
     have a beta distribution \eqn{\alpha | H_0 \sim \mbox{Beta}(1,
-    \code{y})}{alpha|H0 ~ Beta(1, \code{y})}. For the fixed power parameter
+    \code{y})}{alpha|H0 ~ Beta(1, y)}. For the fixed power parameter
     case, the specification of an unit-information prior \eqn{\theta \sim
     \mathrm{N}(0, \code{uv})}{theta ~ N(0, uv)} for the effect size
     \eqn{\theta}{theta} is required as the prior is otherwise not proper.

@@ -1,6 +1,6 @@
 Package: ppRep
 Version: 0.42
-Date: 2023-06-06
+Date: 2023-06-16
 Authors@R:
     person(given = "Samuel",
            family = "Pawel",

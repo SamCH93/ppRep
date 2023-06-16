@@ -43,7 +43,7 @@ This function computes the Bayes factor contrasting
     flat initial prior with a. Under \eqn{H_1}{H1}, the power parameter can
     either be fixed to some value between 0 and 1, or it can have a beta
     distribution \eqn{\alpha | H_1 \sim \mbox{Beta}(\code{x},
-    \code{y})}{alpha|H1 ~ Beta(\code{x}, \code{y})}.
+    \code{y})}{alpha|H1 ~ Beta(x, y)}.
 }
 \examples{
 ## uniform prior on power parameter

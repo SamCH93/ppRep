@@ -654,7 +654,7 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
 ##      ylab = "Marginal posterior density", las = 1)
 
 
-#' @title Joint and marginal posterior distributions
+#' @title Plot joint and marginal posterior distributions
 #'
 #' @description This convenience function computes and, if desired, visualizes
 #'     the joint posterior density of effect size \eqn{\theta}{theta} and power
@@ -683,9 +683,8 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
 #' @param nGrid Number of grid points. Defaults to \code{100}.
 #' @param plot Logical indicating whether data should be plotted. If
 #'     \code{FALSE} only the data used for plotting are returned.
-#' @param CI Logical indicating whether 95\% highest posterior credible intervals
-#'     should be plotted. Defaults to \code{FALSE} because computing them takes
-#'     some time.
+#' @param CI Logical indicating whether 95\% highest posterior credible
+#'     intervals should be plotted. Defaults to \code{FALSE}.
 #' @param ... Additional arguments passed to \code{plot}.
 #'
 #' @return Plots joint and marginal posterior densities, invisibly returns a
@@ -791,13 +790,12 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
         thetaCI <- c(NA, NA)
     }
 
-
-
+    ## plot posterior distributions
     if (plot) {
         oldpar <- graphics::par("mfrow", "mar")
         graphics::layout(mat = matrix(c(1, 1, 2, 3), ncol = 2, byrow = TRUE))
         graphics::par(mar = c(1, oldpar$mar[2:4]))
-        ## joint density
+        ## joint distribution
         jointdensMat <- matrix(data = jointdens, ncol = nGrid, byrow = TRUE)
         graphics::image(x = thetaGrid, y = alphaGrid, z = jointdensMat,
                         xlab = "",
@@ -823,7 +821,7 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
         plot(thetaGrid, thetadens, xlab = bquote("Effect size" ~ theta),
              ylab = "Marginal posterior density", type = "l", las = 1,
              ylim = c(0, max(thetadens)*1.1))
-                if (CI == TRUE) {
+        if (CI == TRUE) {
             graphics::arrows(x0 = thetaCI[1], x1 = thetaCI[2],
                              y0 = max(thetadens)*1.1, length = 0.05, angle = 90,
                              code = 3)
@@ -837,7 +835,7 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
                                      density = alphadens),
                 thetaDF = data.frame(theta = thetaGrid,
                                      density = thetadens),
-                ciCF = data.frame(lower = c(alphaCI[1], thetaCI[1]),
+                ciDF = data.frame(lower = c(alphaCI[1], thetaCI[1]),
                                   upper = c(alphaCI[2], thetaCI[2]),
                                   parameter = c("power parameter", "effect size")))
     invisible(out)

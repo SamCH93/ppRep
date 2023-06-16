@@ -2,7 +2,7 @@
 % Please edit documentation in R/estimation.R
 \name{plotPP}
 \alias{plotPP}
-\title{Joint and marginal posterior distributions}
+\title{Plot joint and marginal posterior distributions}
 \usage{
 plotPP(
   tr,
@@ -53,9 +53,8 @@ zero and one.}
 \item{plot}{Logical indicating whether data should be plotted. If
 \code{FALSE} only the data used for plotting are returned.}
 
-\item{CI}{Logical indicating whether 95\% highest posterior credible intervals
-should be plotted. Defaults to \code{FALSE} because computing them takes
-some time.}
+\item{CI}{Logical indicating whether 95\% highest posterior credible
+intervals should be plotted. Defaults to \code{FALSE}.}
 
 \item{...}{Additional arguments passed to \code{plot}.}
 }
