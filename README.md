@@ -11,6 +11,11 @@ Pawel, S., Aust, F., Held, L., and Wagenmakers, E.-J. (2022). Power Priors for
 ## Installation
 
 ```r
+## CRAN version
+install.packages("ppRep")
+
+## from GitHub
+## install.packages("remotes") # requires remotes package
 remotes::install_github(repo = "SamCH93/ppRep")
 ```
 
