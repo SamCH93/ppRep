@@ -1,4 +1,4 @@
-citHeader(paste("To cite the R-package 'ciCalibrate' in publications,",
+citHeader(paste("To cite the R-package 'ppRep' in publications,",
                 "please use:"))
 
 bibentry(bibtype = "Misc",

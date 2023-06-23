@@ -1,3 +1,7 @@
+# ppRep 0.42.2
+
+- fix in the CITATION file
+
 # ppRep 0.42.1
 
 - fix to properly restore `par` values in `plotPP` function
