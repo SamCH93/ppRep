@@ -1,3 +1,7 @@
+# ppRep 0.42.3
+
+- update CITATION because article is published in TEST
+
 # ppRep 0.42.2
 
 - fix in the CITATION file

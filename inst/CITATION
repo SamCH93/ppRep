@@ -1,17 +1,16 @@
 citHeader(paste("To cite the R-package 'ppRep' in publications,",
                 "please use:"))
 
-bibentry(bibtype = "Misc",
+bibentry(bibtype = "Article",
          title = "Power Priors for Replication Studies",
          author = c(person(given = "Samuel", family = "Pawel", role = "aut"),
                     person(given = "Frederik", family = "Aust", role = "aut"),
                     person(given = "Leonhard", family = "Held", role = "aut"),
                     person(given = "Eric-Jan", family = "Wagenmakers", role = "aut")),
-         doi = "10.48550/arXiv.2207.14720",
-         ## journal = "",
+         doi = "10.1007/s11749-023-00888-5",
+         journal = "TEST",
          ## volume = "",
          ## number = "",
          ## pages = "",
-         note = "arXiv Preprint",
-         year = "2022"
+         year = "2023"
          )

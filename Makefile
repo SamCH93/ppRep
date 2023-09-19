@@ -5,7 +5,7 @@
 ## ----------------------------------------------------------------------------
 
 PACKAGE = ppRep
-VERSION = 0.42.2
+VERSION = 0.42.3
 TAR = $(PACKAGE)_$(VERSION).tar.gz
 
 all: build
