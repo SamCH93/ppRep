@@ -1,6 +1,8 @@
 # ppRep 0.42.3
 
 - update CITATION because article is published in TEST
+- change internal integration options in `postPPthetaHPD`
+- add ... argument to `plotPP` to modify integration options
 
 # ppRep 0.42.2
 

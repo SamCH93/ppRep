@@ -2,7 +2,7 @@ citHeader(paste("To cite the R-package 'ppRep' in publications,",
                 "please use:"))
 
 bibentry(bibtype = "Article",
-         title = "Power Priors for Replication Studies",
+         title = "Power priors for replication studies",
          author = c(person(given = "Samuel", family = "Pawel", role = "aut"),
                     person(given = "Frederik", family = "Aust", role = "aut"),
                     person(given = "Leonhard", family = "Held", role = "aut"),

@@ -588,7 +588,8 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
             densFun <- function(theta) {
                 postPPtheta(theta = theta, tr = tr, sr = sr, to = to, so = so,
                             x = x, y = y, alpha = alpha, m = m, v = v,
-                            rel.tol = .Machine$double.eps^0.5)
+                            ## this integral requires typically higher precision
+                            rel.tol = .Machine$double.eps^0.75)
             }
             rootFun <- function(x) {
                 stats::integrate(f = densFun, lower = -Inf, upper = x,
@@ -685,7 +686,9 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
 #'     \code{FALSE} only the data used for plotting are returned.
 #' @param CI Logical indicating whether 95\% highest posterior credible
 #'     intervals should be plotted. Defaults to \code{FALSE}.
-#' @param ... Additional arguments passed to \code{plot}.
+#' @param ... Additional arguments passed to \code{stats::integrate} for
+#'     computation of posterior densities and highest posterior density credible
+#'     intervals.
 #'
 #' @return Plots joint and marginal posterior densities, invisibly returns a
 #'     list with the data for the plots.
@@ -773,18 +776,18 @@ plotPP <- function(tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 
     ## compute densities
     jointdens <- postPP(theta = jointGrid$theta, alpha = jointGrid$alpha, tr = tr,
-                        sr = sr, to = to, so = so, x = x, y = y, m = m, v = v)
+                        sr = sr, to = to, so = so, x = x, y = y, m = m, v = v, ... = ...)
     alphadens <- postPPalpha(alpha = alphaGrid, tr = tr, sr = sr, to = to,
-                             so = so, x = x, y = y, m = m, v = v)
+                             so = so, x = x, y = y, m = m, v = v, ... = ...)
     thetadens <- postPPtheta(theta = thetaGrid, tr = tr, sr = sr, to = to,
-                             so = so, x = x, y = y, m = m, v = v)
+                             so = so, x = x, y = y, m = m, v = v, ... = ...)
 
     ## compute HPD intervals
     if (CI == TRUE) {
         alphaCI <- postPPalphaHPD(level = 0.95, tr = tr, sr = sr, to = to,
-                                  so = so, x = x, y = y, m = m, v = v)
+                                  so = so, x = x, y = y, m = m, v = v, ... = ...)
         thetaCI <- postPPthetaHPD(level = 0.95, tr = tr, sr = sr, to = to,
-                                  so = so, x = x, y = y, m = m, v = v)
+                                  so = so, x = x, y = y, m = m, v = v, ... = ...)
     } else {
         alphaCI <- c(NA, NA)
         thetaCI <- c(NA, NA)

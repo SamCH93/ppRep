@@ -56,7 +56,9 @@ zero and one.}
 \item{CI}{Logical indicating whether 95\% highest posterior credible
 intervals should be plotted. Defaults to \code{FALSE}.}
 
-\item{...}{Additional arguments passed to \code{plot}.}
+\item{...}{Additional arguments passed to \code{stats::integrate} for
+computation of posterior densities and highest posterior density credible
+intervals.}
 }
 \value{
 Plots joint and marginal posterior densities, invisibly returns a
