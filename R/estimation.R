@@ -74,7 +74,7 @@ postNormMean <- function(dat, vardata, priormean, priorvar, alpha = 1) {
 #' @param tr Effect estimate of the replication study.
 #' @param to Effect estimate of the original study.
 #' @param sr Standard error of the replication effect estimate.
-#' @param so Standard error of the replication effect estimate.
+#' @param so Standard error of the original effect estimate.
 #' @param x Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
 #'     Defaults to \code{1}.
 #' @param y Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.
@@ -194,7 +194,7 @@ postPP <- function(theta, alpha, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf,
 #' @param tr Effect estimate of the replication study.
 #' @param to Effect estimate of the original study.
 #' @param sr Standard error of the replication effect estimate.
-#' @param so Standard error of the replication effect estimate.
+#' @param so Standard error of the original effect estimate.
 #' @param x Number of successes parameter of beta prior \eqn{\alpha}{alpha}.
 #'     Defaults to \code{1}.
 #' @param y Number of failures parameter of beta prior \eqn{\alpha}{alpha}.
@@ -381,7 +381,7 @@ postPPalphaHPD <- function(level = 0.95, tr, sr, to, so, x = 1, y = 1, m = 0,
 #' @param tr Effect estimate of the replication study.
 #' @param to Effect estimate of the original study.
 #' @param sr Standard error of the replication effect estimate.
-#' @param so Standard error of the replication effect estimate.
+#' @param so Standard error of the original effect estimate.
 #' @param x Number of successes parameter for beta prior of power parameter
 #'     \eqn{\alpha}{alpha}. Defaults to \code{1}. Is only taken into account
 #'     when \code{alpha = NA}.
@@ -668,7 +668,7 @@ postPPthetaHPD <- function(level, tr, sr, to, so, x = 1, y = 1, alpha = NA,
 #' @param tr Effect estimate of the replication study.
 #' @param to Effect estimate of the original study.
 #' @param sr Standard error of the replication effect estimate.
-#' @param so Standard error of the replication effect estimate.
+#' @param so Standard error of the original effect estimate.
 #' @param x Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
 #'     Defaults to \code{1}.
 #' @param y Number of failures parameter of beta prior for \eqn{\alpha}{alpha}.

@@ -13,7 +13,7 @@ margLik(tr, to, sr, so, x = 1, y = 1, m = 0, v = Inf, ...)
 
 \item{sr}{Standard error of the replication effect estimate.}
 
-\item{so}{Standard error of the replication effect estimate.}
+\item{so}{Standard error of the original effect estimate.}
 
 \item{x}{Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
 Defaults to \code{1}.}

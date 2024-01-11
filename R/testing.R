@@ -16,7 +16,7 @@
 #' @param tr Effect estimate of the replication study.
 #' @param to Effect estimate of the original study.
 #' @param sr Standard error of the replication effect estimate.
-#' @param so Standard error of the replication effect estimate.
+#' @param so Standard error of the original effect estimate.
 #' @param x Number of successes parameter for beta prior of power parameter
 #'     under \eqn{H_1}{H1}. Defaults to \code{1}. Is only taken into account when
 #'     \code{alpha = NA}.
@@ -116,7 +116,7 @@ bfPPtheta <- function(tr, sr, to, so, x = 1, y = 1, alpha = NA, ...) {
 #' @param tr Effect estimate of the replication study.
 #' @param to Effect estimate of the original study.
 #' @param sr Standard error of the replication effect estimate.
-#' @param so Standard error of the replication effect estimate.
+#' @param so Standard error of the original effect estimate.
 #' @param y Number of failures parameter for beta prior of power parameter under
 #'     \eqn{H_0}{H0}. Has to be larger than 1 so that density is monotonically
 #'     decreasing. Defaults to \code{2} (a linearly decreasing prior with zero

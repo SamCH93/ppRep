@@ -13,7 +13,7 @@ bfPPtheta(tr, sr, to, so, x = 1, y = 1, alpha = NA, ...)
 
 \item{to}{Effect estimate of the original study.}
 
-\item{so}{Standard error of the replication effect estimate.}
+\item{so}{Standard error of the original effect estimate.}
 
 \item{x}{Number of successes parameter for beta prior of power parameter
 under \eqn{H_1}{H1}. Defaults to \code{1}. Is only taken into account when

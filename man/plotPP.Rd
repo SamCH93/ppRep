@@ -28,7 +28,7 @@ plotPP(
 
 \item{to}{Effect estimate of the original study.}
 
-\item{so}{Standard error of the replication effect estimate.}
+\item{so}{Standard error of the original effect estimate.}
 
 \item{x}{Number of successes parameter of beta prior for \eqn{\alpha}{alpha}.
 Defaults to \code{1}.}

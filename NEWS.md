@@ -1,3 +1,7 @@
+# ppRep 0.42.4
+
+- fix a typo in documentation of original standard error argument
+
 # ppRep 0.42.3
 
 - update CITATION because article is published in TEST

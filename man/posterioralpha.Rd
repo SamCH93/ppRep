@@ -18,7 +18,7 @@ postPPalphaHPD(level = 0.95, tr, sr, to, so, x = 1, y = 1, m = 0, v = Inf, ...)
 
 \item{to}{Effect estimate of the original study.}
 
-\item{so}{Standard error of the replication effect estimate.}
+\item{so}{Standard error of the original effect estimate.}
 
 \item{x}{Number of successes parameter of beta prior \eqn{\alpha}{alpha}.
 Defaults to \code{1}.}

@@ -13,7 +13,7 @@ bfPPalpha(tr, sr, to, so, y = 2, uv = NA, ...)
 
 \item{to}{Effect estimate of the original study.}
 
-\item{so}{Standard error of the replication effect estimate.}
+\item{so}{Standard error of the original effect estimate.}
 
 \item{y}{Number of failures parameter for beta prior of power parameter under
 \eqn{H_0}{H0}. Has to be larger than 1 so that density is monotonically
